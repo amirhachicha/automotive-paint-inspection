@@ -1,0 +1,17 @@
+﻿file_path,filename,true_class,predicted_class,confidence,confidence_percent,proba_original,proba_repeint
+/content/dataset_final_splits_v2/test/original/image_186.jpeg,image_186.jpeg,original,repeint,0.6097654104232788,60.976539611816406,0.3902345895767212,0.6097654104232788
+/content/dataset_final_splits_v2/test/original/image_188.jpeg,image_188.jpeg,original,repeint,0.5174922347068787,51.74922180175781,0.48250776529312134,0.5174922347068787
+/content/dataset_final_splits_v2/test/repeint/image_015.jpeg,image_015.jpeg,repeint,original,0.6607317328453064,66.07317352294922,0.6607317328453064,0.339268296957016
+/content/dataset_final_splits_v2/test/repeint/image_016.jpeg,image_016.jpeg,repeint,original,0.692051351070404,69.20513153076172,0.692051351070404,0.30794867873191833
+/content/dataset_final_splits_v2/test/repeint/image_017.jpeg,image_017.jpeg,repeint,original,0.6483811140060425,64.8381118774414,0.6483811140060425,0.3516188859939575
+/content/dataset_final_splits_v2/test/repeint/image_018.jpeg,image_018.jpeg,repeint,original,0.7140007019042969,71.40007019042969,0.7140007019042969,0.28599926829338074
+/content/dataset_final_splits_v2/test/repeint/image_019.jpeg,image_019.jpeg,repeint,original,0.7186384201049805,71.86384582519531,0.7186384201049805,0.28136155009269714
+/content/dataset_final_splits_v2/test/repeint/image_020.jpeg,image_020.jpeg,repeint,original,0.7133932113647461,71.33932495117188,0.7133932113647461,0.2866068482398987
+/content/dataset_final_splits_v2/test/repeint/image_239.jpeg,image_239.jpeg,repeint,original,0.7140007019042969,71.40007019042969,0.7140007019042969,0.28599926829338074
+/content/dataset_final_splits_v2/test/repeint/image_240.jpeg,image_240.jpeg,repeint,original,0.6607317328453064,66.07317352294922,0.6607317328453064,0.339268296957016
+/content/dataset_final_splits_v2/test/repeint/image_241.jpeg,image_241.jpeg,repeint,original,0.692051351070404,69.20513153076172,0.692051351070404,0.30794867873191833
+/content/dataset_final_splits_v2/test/repeint/image_242.jpeg,image_242.jpeg,repeint,original,0.6483811140060425,64.8381118774414,0.6483811140060425,0.3516188859939575
+/content/dataset_final_splits_v2/test/repeint/image_243.jpeg,image_243.jpeg,repeint,original,0.7117196917533875,71.17196655273438,0.7117196917533875,0.28828033804893494
+/content/dataset_final_splits_v2/test/repeint/image_244.jpeg,image_244.jpeg,repeint,original,0.7186384201049805,71.86384582519531,0.7186384201049805,0.28136155009269714
+/content/dataset_final_splits_v2/test/repeint/image_245.jpeg,image_245.jpeg,repeint,original,0.7133932113647461,71.33932495117188,0.7133932113647461,0.2866068482398987
+/content/dataset_final_splits_v2/test/repeint/image_246.jpeg,image_246.jpeg,repeint,original,0.6949461698532104,69.49461364746094,0.6949461698532104,0.30505383014678955
