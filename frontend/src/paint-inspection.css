@@ -10,8 +10,33 @@
 .paint-input-card, .paint-crop-card, .paint-result-card, .paint-result-placeholder { width: 100%; min-width: 0; padding: 12px; border: 1px solid #EDE9FE; border-radius: 16px; background: #FFFFFF; box-shadow: 0 2px 16px rgba(109, 40, 217, 0.07); box-sizing: border-box; }
 .paint-input-card { display: flex; flex-direction: column; }
 .paint-crop-card { margin-top: 10px; }
-.file-picker { display: block; padding: 12px; border: 1px dashed var(--border-strong); border-radius: 10px; cursor: pointer; }
-.file-picker input { display: block; width: 100%; margin-top: 12px; }
+.file-picker { display: block; padding: 12px; border: 1px dashed var(--border-strong); border-radius: 10px; }
+.file-picker input.file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.picker-button {
+  margin-top: 12px;
+  padding: 9px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  color: var(--violet-700);
+  font-weight: var(--fw-bold);
+}
+.picker-button:hover { background: var(--violet-100); }
+.picker-file-status {
+  display: block;
+  margin-top: 8px;
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
 .picker-title { display: block; font-weight: var(--fw-bold); }
 .picker-hint, .file-name, .paint-experimental-note { display: block; margin-top: 6px; color: var(--fg-muted); font-size: var(--text-sm); }
 .preview-frame { display: flex; align-items: center; justify-content: center; width: 100%; height: 210px; min-height: 0; margin-top: 12px; overflow: hidden; border-radius: 10px; background: #F5F3FF; }

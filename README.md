@@ -1,4 +1,3 @@
-
 # Automotive Repainted Panel Qualification Using Computer Vision
 
 An experimental application that estimates whether an automotive paint surface appears to be original or repainted based on a close-up image. The system relies on an **EfficientNet-B0** model and a **FastAPI** API, accessed through a **React** web interface.

@@ -1,4 +1,9 @@
 const PAINT_API_BASES = ['http://127.0.0.1:8000', 'http://localhost:8000'];
+const VERDICT_LABELS = {
+  origine: 'Original',
+  repeint: 'Repainted',
+  incertain: 'Uncertain',
+};
 
 function PaintInspection() {
   const [selectedFile, setSelectedFile] = React.useState(null);
@@ -24,7 +29,7 @@ function PaintInspection() {
     if (!file) return;
 
     if (!['image/jpeg', 'image/png'].includes(file.type)) {
-      setErrorMessage('Formats acceptés : JPEG et PNG uniquement.');
+      setErrorMessage('Accepted formats: JPEG and PNG only.');
       return;
     }
 
@@ -64,18 +69,18 @@ function PaintInspection() {
 
     try {
       if (!response) {
-        throw new Error(lastError?.message || 'Backend inaccessible.');
+        throw new Error(lastError?.message || 'Backend is unreachable.');
       }
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.detail || data.message || 'Erreur du serveur.');
+        throw new Error(data.detail || data.message || 'Server error.');
       }
 
       setResult(data);
     } catch (error) {
       setErrorMessage(
-        error.message || "Impossible de contacter le serveur d'analyse peinture."
+        error.message || 'Unable to contact the paint analysis server.'
       );
     } finally {
       setIsLoading(false);
@@ -95,38 +100,49 @@ function PaintInspection() {
     <main className="paint-page">
       <section className="paint-shell">
         <header className="paint-header">
-          <p className="paint-eyebrow">Modèle expérimental</p>
-          <h1>Classification de peinture automobile</h1>
+          <p className="paint-eyebrow">Experimental model</p>
+          <h1>Automotive Paint Classification</h1>
           <p className="paint-intro">
-            Soumettez une image macro pour estimer si la peinture est d'origine ou repeinte.
+            Upload a macro image to estimate whether the paint is original or repainted.
           </p>
         </header>
 
         <section className="paint-workspace">
           <div className="paint-left-column">
             <section className="paint-input-card">
-              <label className="file-picker">
-                <span className="picker-title">Choisir une image</span>
+              <div className="file-picker">
+                <span className="picker-title">Choose an image</span>
                 <span className="picker-hint">
-                JPEG ou PNG, une seule image, 10 MB maximum
+                  JPEG or PNG, one image, maximum 10 MB
+                </span>
+                <button
+                  className="picker-button"
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  Choose file
+                </button>
+                <span className="picker-file-status">
+                  {selectedFile?.name || 'No file selected'}
                 </span>
                 <input
                   ref={fileInputRef}
                   type="file"
+                  className="file-input"
                   accept="image/jpeg,image/png"
                   onChange={onFileSelected}
                 />
-              </label>
+              </div>
 
               {previewUrl ? (
                 <>
                   <div className="preview-frame">
-                    <img src={previewUrl} alt="Image originale sélectionnée" />
+                    <img src={previewUrl} alt="Selected source image" />
                   </div>
                   <p className="file-name">{selectedFile?.name}</p>
                 </>
               ) : (
-                <div className="empty-preview">Aucun aperçu disponible</div>
+                <div className="empty-preview">No preview available</div>
               )}
 
               {!result && (
@@ -136,13 +152,13 @@ function PaintInspection() {
                   disabled={!selectedFile || isLoading}
                   onClick={analyze}
                 >
-                  {isLoading ? 'Analyse en cours...' : "Valider l'image"}
+                  {isLoading ? 'Analysis in progress...' : 'Analyze image'}
                 </button>
               )}
 
               {isLoading && (
                 <p className="paint-loading-message" role="status">
-                  Le modèle analyse votre image...
+                  The model is analyzing your image...
                 </p>
               )}
 
@@ -155,16 +171,16 @@ function PaintInspection() {
 
             {result?.cropped_image && (
               <section className="paint-crop-card">
-                <h2>Zone utilisée par le modèle</h2>
+                <h2>Area used by the model</h2>
                 <div className="crop-preview-frame">
                   <img
                     src={result.cropped_image}
-                    alt="Zone centrale utilisée par le modèle"
+                    alt="Central area used by the model"
                   />
                 </div>
                 <p className="crop-note">
-                  Les bords périphériques sont retirés avant l'inférence afin de
-                  limiter l'influence du vignettage et du cercle lumineux.
+                  Peripheral edges are removed before inference to limit the
+                  influence of vignetting and the bright center circle.
                 </p>
               </section>
             )}
@@ -173,17 +189,17 @@ function PaintInspection() {
           <aside className="result-panel" aria-live="polite">
             {result ? (
               <div className={`paint-result-card verdict-${result.verdict}`}>
-                <p className="paint-eyebrow">Résultat</p>
-                <h2>{result.verdict}</h2>
+                <p className="paint-eyebrow">Result</p>
+                <h2>{VERDICT_LABELS[result.verdict] || result.verdict}</h2>
 
                 <div className="paint-confidence">
-                  <span>Confiance</span>
+                  <span>Confidence</span>
                   <strong>{Math.round(result.confidence * 100)}%</strong>
                 </div>
 
                 {[
-                  ['Origine', result.probabilities.origine, 'origine'],
-                  ['Repeint', result.probabilities.repeint, 'repeint'],
+                  ['Original paint', result.probabilities.origine, 'origine'],
+                  ['Repainted', result.probabilities.repeint, 'repeint'],
                 ].map(([label, probability, type]) => (
                   <div className="paint-probability-row" key={type}>
                     <div>
@@ -197,17 +213,17 @@ function PaintInspection() {
                 ))}
 
                 <p className="paint-experimental-note">
-                  Résultat expérimental, modèle {result.model_version}
+                  Experimental result, model {result.model_version}
                 </p>
                 <button className="paint-reset-button" type="button" onClick={reset}>
-                  Nouvelle analyse
+                  New analysis
                 </button>
               </div>
             ) : (
               <div className="paint-result-placeholder">
                 <span>01</span>
-                <h2>Votre résultat apparaîtra ici</h2>
-                <p>Sélectionnez une image puis validez-la pour lancer l'inférence.</p>
+                <h2>Your result will appear here</h2>
+                <p>Select an image, then analyze it to start inference.</p>
               </div>
             )}
           </aside>
