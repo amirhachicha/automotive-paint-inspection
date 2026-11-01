@@ -1,3 +1,228 @@
+# Internship Schedule (8 Weeks)
+
+---
+
+# Week 1 — Literature Review and Project Scoping *(Completed)*
+
+## Objective
+
+Establish the scientific framework of the project and define the experimental strategy.
+
+| Day                 | Objective                                                                                                                                       |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Monday**    | Understand the industrial requirements, the problem of **original paint vs. repainted paint**, and the internship objectives.            |
+| **Tuesday**   | Study existing scientific research (computer vision, automotive paint inspection, Deep Learning).                                               |
+| **Wednesday** | Identify the different hardware solutions (smartphone, CPL filter, LED lighting, spectrophotometer, ColorChecker, Rhopoint TAMS, macro lenses). |
+| **Thursday**  | Compare the solutions in terms of performance, constraints, and compatibility with a smartphone application.                                    |
+| **Friday**    | Finalize the SOTA document, define the selected setup as the reference solution, and establish the project's experimental strategy.             |
+
+### Expected Deliverable
+
+- **Deliverable 1:** Benchmark matrix comparing setups (A/B/C/D/E/F), including cost, time, constraints, and expected performance.
+
+---
+
+# Week 2 — AI Pipeline Preparation *(Completed)*
+
+## Objective
+
+Acquire the skills required to develop the computer vision pipeline before receiving the equipment.
+
+| Day                 | Objective                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Monday**    | Discover the fundamental principles of computer vision and the general operation of an image classification system.*(Playlist – Day 1: Introduction to Computer Vision)*                                                                                                                                                                                                                               |
+| **Tuesday**   | Master image processing operations using OpenCV (reading, displaying, filtering, geometric transformations, and color spaces).*(Playlist – Day 2: Image & Video Processing using OpenCV Python)*                                                                                                                                                                                                       |
+| **Wednesday** | Correct, restructure, and complete the SOTA document as well as the benchmark methodology protocol.                                                                                                                                                                                                                                                                                                       |
+| **Thursday**  | Understand how CNNs work, including convolutions, pooling, and automatic feature extraction, in preparation for selecting the**EfficientNet-B0** model. *(Playlist – Day 3: CNN & Feature Extractor)*                                                                                                                                                                                            |
+| **Friday**    | Study how to train a neural network on a custom dataset and understand the concepts of datasets, labels, epochs, batch size, loss functions, and validation. Validate the end-to-end pipeline (data loading → training loop → evaluation KPIs) using a public proxy dataset to verify the technical workflow before receiving Setup F.*(Playlist – Day 7: Training CNN from Scratch on Custom Data)* |
+
+---
+
+# Week 3 — Further Literature Review and Hardware Selection Validation *(Completed)*
+
+## Objective
+
+Conduct further research into portable optical acquisition devices and finalize the selection of Setup F through preliminary empirical validation.
+
+| Day                 | Objective                                                                                                                                                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Monday**    | Conduct in-depth research on portable optical acquisition devices (industrial USB cameras, compact cameras, smartphone clip-on macro lenses).                                                                       |
+| **Tuesday**   | Perform a detailed comparative analysis of the different solutions: monochrome cameras (Basler, IDS, FLIR, Innomaker), cameras (Ricoh GR, Canon, Nikon), and smartphone clip-on modules (Apexel, Sandmarc, Moment). |
+| **Wednesday** | Specifically study smartphone macro lenses and evaluate their suitability for revealing the orange-peel texture signal at the pixel level.                                                                          |
+| **Thursday**  | Conduct a preliminary feasibility test of the macro imaging concept using the smartphone's native macro mode to validate the approach before purchasing the final Apexel module.                                    |
+| **Friday**    | Finalize the selection of Setup F (all-in-one Apexel module with integrated LED lighting and CPL filter). Update the SOTA document with the newly selected configuration. Confirm the equipment order.              |
+
+---
+
+# Week 4 — Software Pipeline Development *(In Progress)*
+
+## Objective
+
+Build the first complete software pipeline and technically validate it using a public dataset before receiving the Setup F equipment.
+
+| Day                 | Objective                                                                                                                                                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Monday**    | Study**Data Augmentation** techniques (rotation, flipping, brightness, contrast) and evaluate their potential to improve the robustness of the future model. *(Playlist – Day 8: Data Augmentation)*                                                                                                                  |
+| **Tuesday**   | Understand the principle of**Transfer Learning**, compare pretrained models, and prepare to use **EfficientNet-B0**. *(Playlist – Day 10: Transfer Learning & Pretrained Models)*                                                                                                                               |
+| **Wednesday** | Study the implementation of image classification using**Keras / TensorFlow** (the selected framework for **TensorFlow Lite** compatibility and final smartphone deployment). Understand the structure of a training project: `Sequential`, `compile`, `model.fit()`, `callbacks`, and `ModelCheckpoint`. |
+| **Thursday**  | Develop an initial software pipeline: image loading, OpenCV preprocessing, resizing to**384 × 384**, and data preparation for **Keras** (`image_dataset_from_directory`, `Rescaling`, `tf.data.AUTOTUNE`).                                                                                                  |
+| **Friday**    | Perform a**technical test** of the complete software pipeline using a public dataset reorganized into two classes to verify the entire workflow (loading, preprocessing, data augmentation, Phase 1 + Phase 2 training, evaluation, inference, and saving).                                                              |
+
+---
+
+# Week 5 — Final Preparation and Start of Data Collection
+
+## Objective
+
+Finalize the acquisition protocol using the Redmi Note 12 + Apexel module, prepare traceability tools, and begin collecting the proprietary dataset.
+
+| Day                 | Objective                        | Details                                                                                                                                                                                                          |
+| ------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Monday**    | Test the Apexel module           | Receive and test the Apexel module with the Redmi Note 12. Check framing, focusing, working distance, integrated lighting, and the different capture modes. Identify potential lighting or image quality issues. |
+| **Tuesday**   | Write the field SOP              | Write the`protocole_experimental_final.md` protocol: surface preparation, cleaning, module positioning, working distance, focusing, lighting, number of captures, and quality criteria.                        |
+| **Wednesday** | Structure traceability           | Prepare`metadata_atelier.csv` and the file naming protocol. Organize the Original, Repainted, and Unknown folders. Check the equipment and take a few validation images before starting the campaign.          |
+| **Thursday**  | Start data collection (Day 1)    | Capture the first automotive surfaces using the Redmi Note 12 + Apexel. Record the information associated with the images and check their quality.                                                               |
+| **Friday**    | Continue data collection (Day 2) | Continue capturing images of different vehicles, panels, and colors. Collect comparable Original and Repainted examples whenever possible. Perform a quick image quality check at the end of the day.            |
+
+**Week 5 Deliverables:**
+
+- `docs/protocole_experimental_final.md`
+- `data/metadata_atelier.csv`
+
+---
+
+# Week 6 — Completion of Data Collection and AI Experimentation
+
+## Objective
+
+Complete the data collection campaign, prepare the proprietary dataset, and conduct an initial complete experiment using EfficientNet-B0 to obtain results that can be used in the internship report.
+
+| Day                 | Objective                              | Details                                                                                                                                                                                                                                 |
+| ------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Monday**    | Continue data collection (Day 3)       | Capture additional Original and Repainted surfaces from different vehicles. Complete the metadata and verify the labels with the workshop.                                                                                              |
+| **Tuesday**   | Address data gaps (Day 4)              | Continue data collection, prioritizing panels, colors, and situations that are still underrepresented. Perform a quick quality check on the newly captured images.                                                                      |
+| **Wednesday** | Complete data collection (Day 5)       | Finalize the campaign. Check the total number of images and the distribution of labels, vehicles, panels, and colors. Identify technically unusable images or images whose labels remain uncertain.                                     |
+| **Thursday**  | Prepare the dataset and Phase 1        | Finalize the dataset: quality control, exclusion of unusable images, label validation, organization into Original / Repainted / Unknown categories, and Train / Validation / Test splitting. Start EfficientNet-B0 training in Phase 1. |
+| **Friday**    | Evaluate the model and perform Phase 2 | Evaluate the model (Accuracy, Precision, Recall, F1-score, confusion matrix, AUC). Perform Phase 2 fine-tuning if the dataset and results allow it. Test inference and the Uncertain mechanism. Save the results.                       |
+
+**Week 6 Deliverables:**
+
+- Finalized and partitioned proprietary dataset (Train / Validation / Test)
+- EfficientNet-B0 model (Phase 1 and, if applicable, Phase 2)
+- Training history (`training_history`)
+- Evaluation metrics, confusion matrix, and classification report
+- Inference results and preliminary error analysis
+
+---
+
+# Week 7 — Remote Work: Report Writing and Finalization
+
+## Objective
+
+Use the results obtained during the two weeks of workshop activities to write the internship report, document the methodology, and present the experimental results, limitations, and future prospects of the project.
+
+| Day                 | Objective                  | Details                                                                                                                                                                                                          |
+| ------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Monday**    | Write the Introduction     | Write Chapter 1 — Introduction: industrial context, problem statement, internship objectives, overall approach, and project organization.                                                                       |
+| **Tuesday**   | Write the State of the Art | Write Chapter 2 — State of the Art based on`revue_SOTA.md`. Present the investigated approaches, the limitations of standard RGB imaging, and the justification for selecting Setup F with the Apexel module. |
+| **Wednesday** | Write the Methodology      | Write Chapter 3 — Methodology: Setup F, Redmi Note 12, acquisition protocol, data collection, annotation, dataset preparation, preprocessing, EfficientNet-B0, and training strategy.                           |
+| **Thursday**  | Write the Results          | Write Chapter 4 — Results and Discussion: description of the collected dataset, training results, metrics, confusion matrix, error analysis, and lighting issues on black surfaces.                             |
+| **Friday**    | Finalize the deliverables  | Finalize the report: limitations, future prospects, conclusion, figures, tables, bibliography, and proofreading. Finalize the defense presentation and check repository consistency.                             |
+
+**Week 7 Deliverables:**
+
+- `rapport_stage.pdf`
+- Internship defense presentation
+- Finalized Git repository
+
+---
+
+## Git Repository Software Architecture
+
+To ensure development traceability, version control, and proper organization of internship deliverables, a Git repository architecture is proposed. This organization is based on a main `develop` branch and development (`feature`) branches corresponding to the different project stages.
+
+**Important note:** The root-level files (`README.md`, `requirements.txt`, `config.yaml`) will be finalized and documented in **Week 8** of the internship, once the complete pipeline has been stabilized and the Python dependencies have been confirmed.
+
+```text
+==================================================================================================
+       GIT REPOSITORY ARCHITECTURE & FILE STRUCTURE
+==================================================================================================
+
+develop (Reference branch, stable and clean)
+ │
+ ├──► [S1 + S2 + S3] — Issue #3
+ │     Branch: feature-s1s2s3-sota-review
+ │
+ │     ├── 📄 revue_SOTA.md
+ │     │      (SOTA review and justification for Setup F)
+ │     │
+ │     └── 📄 planning_detaille.md
+ │            (Revised internship schedule)
+ │
+ │
+ ├──► [S4] — Issue #5
+ │     Branch: feature-s4-pipeline-logiciel
+ │
+ │     ├── 📁 docs/requirements/
+ │     │    ├── 📄 data_augmentation.md
+ │     │    ├── 📄 rapport_test_data_augmentation.md
+ │     │    ├── 📄 rapport_transfer_learning.md
+ │     │    └── 📄 data_storage.md
+ │     │
+ │     ├── 📁 src/
+ │     │    └── 📄 pipeline_initial.py
+ │     │
+ │     └── 📁 tests/
+ │          ├── 📓 custom_arch_data_augmentation_cardd.ipynb
+ │          ├── 📓 transfer_learning_efficientnetb0.ipynb
+ │          ├── 📓 test_pipeline_binaire.ipynb
+ │          └── 📓 test_pipeline_binaire_morphologie.ipynb
+ │
+ │
+ ├──► [S5+S6] — Issue #6
+ │     Branch: feature-s5-preparation
+ │
+ │     ├── 📁 docs/
+ │     │    │
+ │     │    |── 📄 rapport_entrainement_dataset_atelier.md
+ │     │    |       (Training methodology, results, and limitations)
+ │     │    ├── 📄 protocole_experimental_final.md
+ │     │           (Field SOP using the Redmi Note 12 + Apexel)
+ │     │
+ │     ├── 📁 src\peint_defects\
+ │          │
+ │          ├── 📓 principale_code.ipynb
+ │          │      (Phase 1 and Phase 2, evaluation, inference, and Uncertain status)
+ |          |
+ │          ├── 📁 dataset_final_splits_v2/
+ │          |    ├── 📁 train/
+ │          |    │    ├── 📁 origine/
+ │          |    │    └── 📁 repeint/
+ │          |    ├── 📁 val/
+ │          |    │    ├── 📁 origine/
+ │          |    │    └── 📁 repeint/
+ │          |    ├── 📁 test/
+ │          |    │    ├── 📁 origine/
+ │          |    │    └── 📁 repeint/
+ │          |    └── 📄 metadata_atelier.csv
+ |          |
+ │          ├── 📁 outputs_training_atelier_v2/
+ │               ├── 📁 figures/
+ │               ├── 📁 metrics/
+ │               ├── 📁 predictions/
+ │               └── 📁 weights/
+ │
+ └──► [S7]
+       Issue #8
+       Branch: feature-s7-rapport-final-distance
+   
+       ├── 📄 rapport_stage.pdf
+       │      (Final report manuscript)
+       │
+       ├── 📁 presentation/
+       │    └── 📄 slides_soutenance.pdf
+```
+
 # Planning prévisionnel du stage (8 semaines)
 
 ---
@@ -215,7 +440,7 @@ develop (Branche de référence, stable, propre)
  └──► [S7]
        Issue #8
        Branche : feature-s7-rapport-final-distance
-     
+   
        ├── 📄 rapport_stage.pdf
        │      (Manuscrit final du rapport)
        │

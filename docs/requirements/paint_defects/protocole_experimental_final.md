@@ -1,185 +1,185 @@
-# Protocole expérimental — Acquisition des images automobiles
 
-**Projet :** MALLOULINOVA / MALLOULIAUTO
-**Référence :** MALL-STG-ETE-2026-PAINT-01
-**Version :** 1.1 — protocole effectivement utilisé
-**Dispositif :** Redmi Note 12 + module Apexel
-**Périmètre :** étude exploratoire de faisabilité
+# Experimental Protocol — Automotive Image Acquisition
 
----
-
-## 1. Objectif
-
-Ce protocole décrit les conditions utilisées pour acquérir des images macro de surfaces automobiles afin d'étudier la différence visuelle entre :
-
-- `origine` : peinture d'origine confirmée ;
-- `repeint` : peinture repeinte confirmée.
-
-L'analyse porte principalement sur les variations de texture, les points visibles, les micro-irrégularités et les variations locales de brillance observées dans les images.
-
-Ce protocole correspond à une campagne pilote et ne constitue pas encore une procédure industrielle définitive.
+**Project:** MALLOULINOVA / MALLOULIAUTO
+**Reference:** MALL-STG-ETE-2026-PAINT-01
+**Version:** 1.1 — Protocol actually used
+**Equipment:** Redmi Note 12 + Apexel attachment
+**Scope:** Exploratory feasibility study
 
 ---
 
-## 2. Matériel utilisé
+## 1. Objective
 
-- Smartphone : **Redmi Note 12** ;
-- Module optique : **Apexel** ;
-- Application caméra du smartphone en mode **Pro** ;
-- Éclairage intégré au module Apexel ;
-- Filtre cpl intégré au module Apexel.
+This protocol describes the conditions used to acquire macro images of automotive surfaces in order to investigate the visual differences between:
 
----
+- `original`: confirmed original paint;
+- `repaint`: confirmed repainted paint.
 
-## 3. Paramètres de capture réellement utilisés
+The analysis focuses primarily on texture variations, visible spots, micro-irregularities, and local variations in gloss observed in the images.
 
-Les paramètres suivants ont été utilisés pendant la campagne :
-
-| Paramètre                | Valeur                                                  |
-| ------------------------- | ------------------------------------------------------- |
-| Smartphone                | Redmi Note 12                                           |
-| Module                    | Apexel                                                  |
-| Mode caméra              | Pro                                                     |
-| Vitesse d'obturation      | **1/50 s**                                        |
-| Balance des blancs        | **5600 K**                                        |
-| Mise au point             | **Auto (F)**                                      |
-| Sensibilité ISO          | **Auto (ISO)**                                    |
-| Compensation d'exposition | **0 EV**                                          |
-| Objectif utilisé         | **W (Wide)**                                      |
-| Distance                  | Quasi nulle, selon la meilleure mise au point observée |
-| Nombre de captures        | **2 à 3 captures par zone étudiée**            |
-
-Le mode 50 MP n'est pas retenu comme mode principal lorsqu'il produit un cercle lumineux, un vignettage ou des bords assombris. Le mode Pro avec l'objectif **W** constitue la configuration documentée pour cette campagne.
+This protocol corresponds to a pilot campaign and does not yet constitute a definitive industrial procedure.
 
 ---
 
-## 4. Procédure de capture
+## 2. Equipment Used
 
-Pour chaque zone automobile étudiée :
-
-1. Positionner le smartphone Redmi Note 12 équipé du module Apexel.
-2. Utiliser l'objectif **W** et ne pas utiliser l'objectif **UW**.
-3. Régler la vitesse à **1/50 s**.
-4. Régler la balance des blancs à **5600 K**.
-5. Laisser la mise au point en mode **Auto (F)**.
-6. Laisser la sensibilité ISO en mode **Auto (ISO)**.
-7. Régler la compensation d'exposition à **0 EV**.
-8. Positionner le module à une distance quasi nulle correspondant à la meilleure netteté observée.
-9. Vérifier visuellement la netteté de la zone centrale.
-10. Réaliser **2 à 3 captures de la même zone**.
-11. Vérifier rapidement les images obtenues.
-12. Enregistrer les images dans le dossier correspondant à leur label.
-
-**La campagne expérimentale a été menée dans plusieurs environnements professionnels du secteur automobile** :
-zones dédiées à l’application et au séchage de la peinture, entreprises automobiles disposant de véhicules neufs, ainsi que des ateliers spécialisés en tôlerie-carrosserie. Cette diversité de sites a permis de collecter des surfaces correspondant à différents états de peinture, tout en intégrant la variabilité des conditions réelles d’acquisition sur le terrain.
+- Smartphone: **Redmi Note 12**;
+- Optical attachment: **Apexel**;
+- Smartphone camera application in **Pro** mode;
+- Integrated lighting of the Apexel attachment;
+- CPL filter integrated into the Apexel attachment.
 
 ---
 
-## 5. Organisation des fichiers
+## 3. Actual Capture Parameters
 
-Les images sont organisées selon deux classes :
+The following parameters were used during the campaign:
+
+| Parameter             | Value                                             |
+| --------------------- | ------------------------------------------------- |
+| Smartphone            | Redmi Note 12                                     |
+| Attachment            | Apexel                                            |
+| Camera mode           | Pro                                               |
+| Shutter speed         | **1/50 s**                                  |
+| White balance         | **5600 K**                                  |
+| Focus                 | **Auto (F)**                                |
+| ISO sensitivity       | **Auto (ISO)**                              |
+| Exposure compensation | **0 EV**                                    |
+| Lens used             | **W (Wide)**                                |
+| Distance              | Almost zero, depending on the best observed focus |
+| Number of captures    | **2 to 3 captures per examined area**       |
+
+The 50 MP mode is not selected as the primary capture mode when it produces a bright circular area, vignetting, or darkened edges. The Pro mode with the **W** lens is the documented configuration used for this campaign.
+
+---
+
+## 4. Image Acquisition Procedure
+
+For each automotive area being examined:
+
+1. Position the Redmi Note 12 smartphone equipped with the Apexel attachment.
+2. Use the **W** lens and do not use the **UW** lens.
+3. Set the shutter speed to **1/50 s**.
+4. Set the white balance to **5600 K**.
+5. Leave the focus in **Auto (F)** mode.
+6. Leave the ISO sensitivity in **Auto (ISO)** mode.
+7. Set the exposure compensation to **0 EV**.
+8. Position the attachment at an almost zero distance corresponding to the best observed sharpness.
+9. Visually check the sharpness of the central area.
+10. Capture **2 to 3 images of the same area**.
+11. Perform a quick check of the acquired images.
+12. Save the images in the folder corresponding to their label.
+
+**The experimental campaign was conducted in several professional environments within the automotive sector**: areas dedicated to paint application and drying, automotive companies with new vehicles, and workshops specializing in sheet metal work and body repair. This variety of locations made it possible to collect surfaces representing different paint conditions while accounting for variations in real-world field acquisition conditions.
+
+---
+
+## 5. File Organization
+
+The images are organized into two classes:
 
 ```text
 dataset/
-├── origine/
-└── repeint/
+├── original/
+└── repaint/
 ```
 
-Après la préparation du dataset, les images sont réparties dans :
+After dataset preparation, the images are distributed into:
 
 ```text
 dataset_final_splits_v2/
 ├── train/
-│   ├── origine/
-│   └── repeint/
+│   ├── original/
+│   └── repaint/
 ├── val/
-│   ├── origine/
-│   └── repeint/
+│   ├── original/
+│   └── repaint/
 └── test/
-    ├── origine/
-    └── repeint/
+    ├── original/
+    └── repaint/
 ```
 
 ---
 
-## 6. Métadonnées utilisées
+## 6. Metadata Used
 
-Le fichier de métadonnées utilisé dans cette campagne contient uniquement les informations effectivement exploitées :
+The metadata file used in this campaign contains only the information actually utilized:
 
-| Champ          | Rôle                                         |
-| -------------- | --------------------------------------------- |
-| `filename`   | Nom de l'image, par exemple`image_225.jpeg` |
-| `filepath`   | Chemin vers l'image                           |
-| `label`      | `origine` ou `repeint`                    |
-| `session_id` | Identifiant de chaque voiture                 |
-| `split`      | `train`, `val` ou `test`                |
+| Field          | Purpose                                    |
+| -------------- | ------------------------------------------ |
+| `filename`   | Image name, for example,`image_225.jpeg` |
+| `filepath`   | Path to the image                          |
+| `label`      | `original` or `repaint`                |
+| `session_id` | Identifier for each vehicle                |
+| `split`      | `train`, `val`, or `test`            |
 
 ---
 
-## 7. Annotation des images
+## 7. Image Annotation
 
-Chaque image est associée à l'une des deux classes :
+Each image is assigned to one of the two classes:
 
 ```text
-origine
-repeint
+original
+repaint
 ```
 
-L'annotation est basée sur les informations disponibles auprès de l'atelier et non uniquement sur l'apparence visuelle de l'image.
+The annotation is based on the information available from the workshop and not solely on the visual appearance of the image.
 
 ---
 
-## 8. Contrôle qualité
+## 8. Quality Control
 
-Une capture est conservée si :
+An image is retained if:
 
-- la zone étudiée est visible ;
-- la mise au point est suffisamment nette ;
-- l'image n'est pas fortement surexposée ou sous-exposée ;
-- la texture n'est pas masquée par un reflet important ;
-- le cercle lumineux ne couvre pas la zone utile.
+- the examined area is visible;
+- the focus is sufficiently sharp;
+- the image is not severely overexposed or underexposed;
+- the texture is not obscured by a significant reflection;
+- the bright circular area does not cover the useful region.
 
-Les images très floues ou fortement dégradées peuvent être exclues du dataset final.
+Images that are severely blurred or significantly degraded may be excluded from the final dataset.
 
 ---
 
-## 9. Préparation des données pour l'IA
+## 9. Data Preparation for AI
 
-Les images sont redimensionnées en :
+The images are resized to:
 
 ```text
 384 × 384 pixels
 ```
 
-Un recadrage central fixe de 32 pixels par côté peut être appliqué afin de réduire l'influence des bords lumineux :
+A fixed central crop of 32 pixels on each side may be applied to reduce the influence of bright edges:
 
 ```text
-Image initiale : 384 × 384
-Zone conservée : 320 × 320
-Entrée modèle : 384 × 384 après redimensionnement
+Initial image: 384 × 384
+Retained area: 320 × 320
+Model input: 384 × 384 after resizing
 ```
 
-Le même traitement doit être appliqué à Train, Validation et Test.
+The same processing must be applied to Train, Validation, and Test.
 
-La data augmentation est appliquée uniquement au jeu Train.
-
----
-
-## 10. Règles de séparation
-
-- Les images d'une même session doivent rester dans le même sous-ensemble lorsque cela est possible.
-- Les images d'un même véhicule ne doivent pas être réparties entre Train et Test si l'identifiant est disponible.
-- Les images Validation et Test ne doivent pas subir de data augmentation.
-- Le Test est utilisé uniquement pour l'évaluation finale.
+Data augmentation is applied only to the Train set.
 
 ---
 
-## 11. Limites du protocole pilote
+## 10. Dataset Splitting Rules
 
-- Le smartphone utilisé est uniquement le Redmi Note 12.
-- Le module utilisé est uniquement l'Apexel.
-- La distance exacte de travail et le grossissement réel ne sont pas encore calibrés précisément.
-- Le mode 50 MP peut produire un vignettage circulaire et des bords assombris.
-- Les captures concernent des zones disponibles dans l'atelier, sans protocole imposant une pièce automobile déterminée.
-- Deux à trois captures par zone ne constituent pas toujours des observations indépendantes.
-- Le dataset pilote ne permet pas encore de valider une utilisation industrielle.
+- Images from the same session should remain in the same subset whenever possible.
+- Images from the same vehicle should not be distributed between Train and Test if the vehicle identifier is available.
+- Validation and Test images must not undergo data augmentation.
+- The Test set is used only for final evaluation.
+
+---
+
+## 11. Limitations of the Pilot Protocol
+
+- Only the Redmi Note 12 smartphone was used.
+- Only the Apexel attachment was used.
+- The exact working distance and actual magnification have not yet been precisely calibrated.
+- The 50 MP mode may produce circular vignetting and darkened edges.
+- The captures cover areas available in the workshop, without a protocol requiring a specific automotive body panel.
+- Two to three captures per area do not always constitute independent observations.
+- The pilot dataset does not yet allow industrial use to be validated.

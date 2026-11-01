@@ -1,70 +1,71 @@
-# Data Augmentation — Étude et Sélection des Techniques
 
-**Référence :** MALL-STG-ETE-2026-PAINT-01  
-**Semaine :** S4  
-**Contexte :** Étude préparatoire à l'implémentation du pipeline Keras
+# Data Augmentation — Study and Selection of Techniques
+
+**Reference:** MALL-STG-ETE-2026-PAINT-01
+**Week:** W4
+**Context:** Preparatory study for the implementation of the Keras pipeline
 
 ---
 
 ## 1. Introduction
 
-### 1.1. Qu'est-ce que la Data Augmentation ?
+### 1.1. What Is Data Augmentation?
 
-La data augmentation est une technique consistant à générer artificiellement de nouvelles images à partir d'un dataset existant, en appliquant des transformations qui préservent le label de l'image. Cette technique permet d'augmenter la diversité des données d'entraînement sans collecter de nouvelles images, améliorant ainsi la robustesse et la généralisation du modèle.
+Data augmentation is a technique used to artificially generate new images from an existing dataset by applying transformations that preserve the image label. This technique increases the diversity of training data without collecting new images, thereby improving the model's robustness and generalization capabilities.
 
-### 1.2. Pourquoi c'est important pour MALLOULIAUTO
+### 1.2. Why Is It Important for MALLOULIAUTO?
 
-Le dataset propriétaire MALLOULIAUTO v0.1 étant limité à 450-500 patches macroscopiques (voir §4 du planning), la data augmentation constitue un levier essentiel pour :
+Since the proprietary MALLOULIAUTO v0.1 dataset is limited to 450–500 macro patches (see §4 of the project schedule), data augmentation is an essential approach to:
 
-- Réduire le risque d'overfitting sur un petit dataset
-- Simuler la variabilité des conditions terrain (luminosité, positionnement du module)
-- Améliorer la robustesse inter-smartphones du modèle
-- Augmenter virtuellement le volume d'entraînement sans coût matériel
-
----
-
-## 2. Techniques Étudiées et Sélectionnées
-
-Le tableau ci-dessous synthétise l'ensemble des techniques de data augmentation évaluées, leur principe, leur pertinence pour la détection macroscopique de la peau d'orange, et la configuration finale retenue pour le pipeline Keras du projet MALLOULIAUTO.
-
-| Technique | Principe | Paramètre Keras | Analyse pour la peau d'orange (patches macroscopiques) | Décision | Configuration retenue |
-|-----------|----------|-----------------|-------------------------------------------------------|:--------:|----------------------|
-| **Rotation** | Rotation aléatoire de l'image dans une plage angulaire définie. Simule les légères variations d'angle de positionnement du module macroscopique sur la surface. | `RandomRotation` | La micro-texture du vernis est isotrope (pas de direction privilégiée), donc invariante à la rotation. Renforce la robustesse aux petites variations d'orientation du module Apexel lors du contact avec la carrosserie. Limiter à ±10-15° pour rester réaliste. | ✅ **Oui** | ±10 à 15° |
-| **Flip horizontal** | Applique un effet miroir horizontal. Un patch d'aile gauche devient visuellement un patch d'aile droite. | `RandomFlip("horizontal")` | La texture macroscopique est identique quelle que soit son orientation spatiale. Double virtuellement le dataset sans introduire d'artefact. Utile car les pièces gauche/droite d'un véhicule ont la même signature texturale en macro. | ✅ **Oui** | Systématique |
-| **Flip vertical** | Applique un effet miroir vertical. L'image est retournée haut-bas. | `RandomFlip("vertical")` | Physiquement irréaliste : les gouttes de peinture coulent vers le bas pendant le séchage, créant une direction privilégiée subtile visible en macro. Pourrait introduire des artefacts avec l'éclairage LED intégré au module qui a une orientation fixe. | ❌ **Non** | — |
-| **Zoom** | Agrandissement ou réduction aléatoire de l'image. Simule les légères variations de distance entre le module et la surface. | `RandomZoom` | La peau d'orange macroscopique est un signal à échelle physique fixe (millimétrique). Un zoom trop important modifie artificiellement l'échelle de la texture et empêche la généralisation terrain. Zoom léger (±5-10%) acceptable pour simuler les petites variations de pression du module contre la carrosserie. | ⚠️ **Léger** | ±5 à 10% |
-| **Translation** | Décalage aléatoire horizontal ou vertical de l'image. Simule un cadrage légèrement décalé de la zone cible. | `RandomTranslation` | La texture macroscopique étant homogène sur toute la zone capturée par le module Apexel, une translation ne change pas l'information utile. Renforce la robustesse au positionnement imprécis du module sur la carrosserie. | ✅ **Oui** | ±10% |
-| **Luminosité** | Modification aléatoire de la luminosité globale. Simule les variations d'éclairage ambiant qui peuvent affecter le rendu même avec les LEDs intégrées. | `RandomBrightness` | Extrêmement utile pour simuler les différentes conditions lumineuses terrain (atelier, parking ombragé, lumière indirecte). Même avec les LEDs intégrées du module Apexel, la lumière ambiante influence légèrement le résultat. Éviter les valeurs extrêmes qui saturent ou sous-exposent. | ✅ **Oui** | ±10 à 20% |
-| **Contraste** | Amplification ou atténuation des différences d'intensité entre pixels. Simule les variations de contraste liées à l'intensité de la lumière ambiante. | `RandomContrast` | Utile pour simuler les variations d'éclairage. Un contraste trop faible pourrait effacer les ombres révélatrices de la peau d'orange capturées par les LEDs du module. Un contraste trop élevé pourrait créer des artefacts. | ✅ **Oui** | ±10 à 15% |
-| **Saturation** | Modification de la saturation des couleurs (couleurs plus vives ou plus pâles). | Custom (`tf.image`) | Le signal principal étant la texture macroscopique (pas la couleur), la saturation a peu d'impact direct. Peut néanmoins simuler les variations de rendu colorimétrique inter-smartphones (ISP) attendues lors des tests Semaine 7, renforçant la robustesse inter-marques. | ✅ **Oui** | ±10 à 15% |
-| **Teinte (Hue)** | Décalage de la teinte globale (rouge → orange → jaune → vert...). Modifie la couleur perçue sans toucher à la texture. | Custom (`tf.image`) | Simule les variations de teinte entre différentes carrosseries (rouge, bleu, gris...). Force le modèle à apprendre la texture macroscopique indépendamment de la couleur de fond de la peinture. Décalage limité pour rester réaliste. | ✅ **Oui** | ±10 à 15° |
-| **Bruit gaussien** | Ajout d'un bruit aléatoire à chaque pixel. Simule le bruit numérique du capteur smartphone (surtout à ISO élevé). | Custom (`GaussianNoise`) | Ambigu en mode macroscopique : le bruit peut être confondu avec la micro-texture fine de la peau d'orange révélée par le grossissement du module Apexel. Risque de dégrader la capacité du modèle à distinguer texture réelle vs bruit. En très faible quantité uniquement, peut renforcer la robustesse. | ⚠️ **Test** | σ < 0.02 |
-| **Flou (Blur)** | Application d'un flou gaussien à l'image. Simule des captures légèrement floues (vibration, mise au point imparfaite). | Custom | Contre-productif : le flou détruit précisément la micro-texture macroscopique que le modèle doit apprendre. En mode macro, la netteté est critique pour capturer la peau d'orange en pixel-perfect. Rendrait le modèle moins discriminant sur les signaux texturaux fins. | ❌ **Non** | — |
-| **Cutout / Random Erasing** | Masquage aléatoire d'une zone rectangulaire de l'image. Force le modèle à ne pas dépendre d'une seule région du patch. | Custom | Renforce la robustesse en obligeant le modèle à apprendre la texture macroscopique sur plusieurs zones du patch. Simule les cas où une partie du patch serait masquée par un reflet résiduel ou une poussière malgré le nettoyage préalable. Ne pas masquer plus de 15-20% de l'image. | ✅ **Oui** | 10-15% max |
-
-### Justification Globale de la Sélection
-
-La configuration retenue privilégie les augmentations qui :
-
-1. **Préservent le signal texture macroscopique** (rotation, flip horizontal, translation, cutout modéré).
-2. **Simulent les conditions terrain** (luminosité, contraste, variations de positionnement du module).
-3. **Renforcent la robustesse inter-smartphones** (saturation, teinte) en prévision des tests de Semaine 7.
-4. **Évitent la destruction du signal principal** (exclusion du flou, bruit minimal, pas de flip vertical).
-
-Cette configuration est cohérente avec la **stratégie macroscopique** définie dans le `revue_SOTA.md` (§4.6) et sera implémentée dans le fichier `pipeline_initial.py` en Semaine 4.
+- Reduce the risk of overfitting on a small dataset.
+- Simulate variations in real-world conditions (lighting, module positioning).
+- Improve the model's inter-smartphone robustness.
+- Virtually increase the training dataset size without additional hardware costs.
 
 ---
 
-## 3. Implémentation Prévue en Keras
+## 2. Techniques Studied and Selected
 
-### 3.1. Structure du Code Prévue
+The following table summarizes all the data augmentation techniques evaluated, their principles, their relevance to macro-scale orange peel detection, and the final configuration selected for the MALLOULIAUTO project's Keras pipeline.
+
+| Technique                         | Principle                                                                                                                                           | Keras Parameter              | Analysis for Orange Peel (Macro Patches)                                                                                                                                                                                                                                                           |       Decision       | Selected Configuration |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------: | ---------------------- |
+| **Rotation**                | Randomly rotates the image within a defined angular range. Simulates slight variations in the positioning angle of the macro module on the surface. | `RandomRotation`           | The clearcoat microtexture is isotropic (it has no preferred direction), making it rotation-invariant. Improves robustness to small variations in the orientation of the Apexel module when it is in contact with the vehicle body. Limit rotation to ±10–15° to maintain realistic conditions. |    ✅**Yes**    | ±10 to 15°           |
+| **Horizontal Flip**         | Applies a horizontal mirror effect. A left fender patch becomes visually equivalent to a right fender patch.                                        | `RandomFlip("horizontal")` | Macro-scale texture remains identical regardless of its spatial orientation. Virtually doubles the dataset without introducing artifacts. Useful because the left and right body panels of a vehicle have the same macro-scale textural signature.                                                 |    ✅**Yes**    | Systematic             |
+| **Vertical Flip**           | Applies a vertical mirror effect. The image is flipped upside down.                                                                                 | `RandomFlip("vertical")`   | Physically unrealistic: paint droplets flow downward during drying, creating a subtle preferred direction that is visible at the macro scale. It could also introduce artifacts due to the integrated LED lighting, which has a fixed orientation.                                                 |    ❌**No**    | —                     |
+| **Zoom**                    | Randomly enlarges or reduces the image. Simulates slight variations in the distance between the module and the surface.                             | `RandomZoom`               | Macro-scale orange peel is a signal with a fixed physical scale (millimetric). Excessive zoom artificially changes the texture scale and prevents real-world generalization. Slight zoom (±5–10%) is acceptable to simulate small variations in the module's pressure against the vehicle body.  | ⚠️**Limited** | ±5 to 10%             |
+| **Translation**             | Randomly shifts the image horizontally or vertically. Simulates slightly misaligned framing of the target area.                                     | `RandomTranslation`        | Since macro-scale texture is homogeneous across the area captured by the Apexel module, translation does not change the relevant information. Improves robustness to imprecise positioning of the module on the vehicle body.                                                                      |    ✅**Yes**    | ±10%                  |
+| **Brightness**              | Randomly modifies the overall image brightness. Simulates ambient lighting variations that may affect the image even when integrated LEDs are used. | `RandomBrightness`         | Extremely useful for simulating different real-world lighting conditions (workshop, shaded parking area, indirect light). Even with the Apexel module's integrated LEDs, ambient light slightly influences the result. Avoid extreme values that cause overexposure or underexposure.              |    ✅**Yes**    | ±10 to 20%            |
+| **Contrast**                | Increases or decreases intensity differences between pixels. Simulates contrast variations caused by ambient light intensity.                       | `RandomContrast`           | Useful for simulating lighting variations. Excessively low contrast could erase the shadows that reveal orange peel and are captured by the module's LEDs. Excessively high contrast could create artifacts.                                                                                       |    ✅**Yes**    | ±10 to 15%            |
+| **Saturation**              | Modifies color saturation, making colors more vivid or more muted.                                                                                  | Custom (`tf.image`)        | Since the main signal is macro-scale texture rather than color, saturation has little direct impact. However, it can simulate variations in color rendering between smartphones (ISP), which are expected to be evaluated during Week 7 tests, thereby improving inter-brand robustness.           |    ✅**Yes**    | ±10 to 15%            |
+| **Hue**                     | Shifts the overall hue (red → orange → yellow → green, etc.). Changes the perceived color without affecting the texture.                         | Custom (`tf.image`)        | Simulates hue variations between different vehicle body colors (red, blue, grey, etc.). Forces the model to learn macro-scale texture independently of the paint's background color. The shift must remain limited to maintain realistic conditions.                                               |    ✅**Yes**    | ±10 to 15°           |
+| **Gaussian Noise**          | Adds random noise to each pixel. Simulates smartphone sensor digital noise, especially at high ISO values.                                          | Custom (`GaussianNoise`)   | Ambiguous in macro mode: noise may be confused with the fine microtexture of orange peel revealed by the Apexel module's magnification. There is a risk of reducing the model's ability to distinguish real texture from noise. In very small quantities only, it may improve robustness.          |  ⚠️**Test**  | σ < 0.02              |
+| **Blur**                    | Applies Gaussian blur to the image. Simulates slightly blurred captures caused by vibration or imperfect focusing.                                  | Custom                       | Counterproductive: blur destroys precisely the macro-scale microtexture that the model needs to learn. In macro mode, sharpness is critical to capturing orange peel with pixel-level detail. It would make the model less discriminative when dealing with fine textural signals.                 |    ❌**No**    | —                     |
+| **Cutout / Random Erasing** | Randomly masks a rectangular area of the image. Forces the model not to rely on a single region of the patch.                                       | Custom                       | Improves robustness by forcing the model to learn macro-scale texture across several areas of the patch. Simulates cases where part of the patch may be obscured by residual reflections or dust despite prior cleaning. No more than 15–20% of the image should be masked.                       |    ✅**Yes**    | 10–15% max            |
+
+### Overall Selection Rationale
+
+The selected configuration prioritizes augmentations that:
+
+1. **Preserve the macro-scale texture signal** (rotation, horizontal flip, translation, moderate cutout).
+2. **Simulate real-world conditions** (brightness, contrast, and module positioning variations).
+3. **Improve inter-smartphone robustness** (saturation and hue), in preparation for Week 7 tests.
+4. **Avoid destroying the main signal** (blur excluded, noise kept to a minimum, no vertical flip).
+
+This configuration is consistent with the **macro-scale approach** defined in `revue_SOTA.md` (§4.6) and will be implemented in the `pipeline_initial.py` file during Week 4.
+
+---
+
+## 3. Planned Keras Implementation
+
+### 3.1. Planned Code Structure
 
 ```python
 import tensorflow as tf
 from tensorflow.keras import layers
 
-# Data augmentation pipeline pour MALLOULIAUTO V0.1
-# Adapté aux patches macroscopiques (module Apexel tout-en-un)
+# Data augmentation pipeline for MALLOULIAUTO V0.1
+# Adapted to macro patches (Apexel all-in-one module)
 data_augmentation = tf.keras.Sequential([
     layers.RandomFlip("horizontal"),
     layers.RandomRotation(0.04),          # ~15°
@@ -72,29 +73,29 @@ data_augmentation = tf.keras.Sequential([
     layers.RandomZoom(0.05),
     layers.RandomBrightness(0.15),
     layers.RandomContrast(0.1),
-    # Saturation et Hue via tf.image (custom layer)
+    # Saturation and Hue via tf.image (custom layer)
 ])
 ```
 
-### 3.2. Points d'Attention pour l'Implémentation
+### 3.2. Implementation Considerations
 
-- Appliquer la data augmentation **uniquement sur le train set** (jamais sur le validation ou test set)
-- Utiliser `training=True` explicite lors de l'appel
-- Intégrer dans `tf.data.Dataset` pipeline pour performance optimale
-- Documenter les paramètres exacts dans `config.yaml`
+- Apply data augmentation **only to the training set** (never to the validation or test sets).
+- Explicitly use `training=True` when calling the augmentation pipeline.
+- Integrate it into the `tf.data.Dataset` pipeline for optimal performance.
+- Document the exact parameters in `config.yaml`.
 
 ---
 
 ## 4. Conclusion
 
-Cette étude préparatoire a permis d'identifier les techniques de data augmentation les plus pertinentes pour le projet MALLOULIAUTO, en privilégiant celles qui préservent le signal texture macroscopique (peau d'orange capturée en pixel-perfect par le module Apexel tout-en-un) tout en simulant la variabilité des conditions terrain.
+This preparatory study identified the data augmentation techniques most relevant to the MALLOULIAUTO project, prioritizing those that preserve the macro-scale texture signal (orange peel captured with pixel-level detail by the Apexel all-in-one module) while simulating variations in real-world conditions.
 
-La configuration retenue sera implémentée en Semaine 4 dans le fichier `pipeline_initial.py` et validée empiriquement avant l'entraînement du modèle EfficientNet-B0 binaire (Origine / Repeint) en Semaine 6.
+The selected configuration will be implemented during Week 4 in the `pipeline_initial.py` file and empirically validated before training the binary EfficientNet-B0 model (**Origin / Repaint**) in Week 6.
 
 ---
 
-## 5. Références
+## 5. References
 
-- Vidéo YouTube "Day 8 : Data Augmentation" (Playlist Computer Vision for Developers)
-- Documentation Keras : https://keras.io/api/layers/preprocessing_layers/image_augmentation/
-- Documentation TensorFlow : https://www.tensorflow.org/tutorials/images/data_augmentation
+- YouTube video: "Day 8: Data Augmentation" (Computer Vision for Developers playlist).
+- Keras Documentation: https://keras.io/api/layers/preprocessing_layers/image_augmentation/
+- TensorFlow Documentation: https://www.tensorflow.org/tutorials/images/data_augmentation

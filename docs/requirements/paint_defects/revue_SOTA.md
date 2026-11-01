@@ -1,516 +1,515 @@
-# MALLOULINOVA – Stage Été 2026
+# MALLOULINOVA – Summer Internship 2026
 
-## R&D — Qualification fiable des pièces repeintes vs peinture d'origine sur véhicule par vision artificielle
+## R&D — Reliable Qualification of Repainted vs. Original Vehicle Paint Using Computer Vision
 
-**Référence :** MALL-STG-ETE-2026-PAINT-01
-**Livrable :** Mission 1 — Revue SOTA & Cadrage du Projet
-
----
-
-## 1. Cadrage Scientifique & Problématique
-
-L'objectif de ce stage est d'étudier la faisabilité d'un système de vision artificielle capable de distinguer automatiquement une peinture d'origine d'une pièce repeinte, à partir d'images acquises avec un smartphone.
-
-Dans le domaine automobile, cette opération est généralement réalisée par un expert qui combine plusieurs indices visuels et son expérience. Une pièce repeinte peut présenter des différences plus ou moins marquées selon la qualité de la réparation, ce qui rend une détection automatique particulièrement difficile.
-
-Les principaux indices pouvant révéler une opération de repeinture sont notamment :
-
--la micro-texture du vernis (effet peau d'orange) ;
-
--les variations locales de brillance ;
-
--les différences de réflexion de la lumière ;
-
--les légères dérives colorimétriques ;
-
--les défauts de finition (poussières, inclusions, traces de polissage, etc.).
-
-Cependant, ces indices ne sont pas systématiquement présents et leur visibilité dépend fortement des conditions d'éclairage, du type de peinture, de la couleur du véhicule et de la qualité de la réparation.
-
-Dans le cadre de ce stage, l'étude se concentre principalement sur l'observation de **la micro-texture de surface**, car elle constitue un indice physique directement lié au procédé d'application et au comportement du vernis lors du séchage. Cette texture devient plus facilement observable grâce à une acquisition macroscopique réalisée avec un smartphone équipé d'un module optique dédié.
-
-L'objectif n'est pas de démontrer que la micro-texture est l'unique critère permettant d'identifier une repeinture, mais d'évaluer si cette information, exploitée par un modèle de Deep Learning, est suffisante pour obtenir une première classification fiable dans des conditions d'acquisition compatibles avec une utilisation mobile.
+**Reference:** MALL-STG-ETE-2026-PAINT-01
+**Deliverable:** Mission 1 — SOTA Review & Project Scoping
 
 ---
 
-## 2. Axe SOTA — Synthèse des techniques candidates
+## 1. Scientific Scope & Problem Statement
 
-La revue SOTA compare ici les principales techniques candidates pour améliorer la qualité du signal destiné à l'IA, en tenant compte des contraintes de portabilité et de coût du projet.
+The objective of this internship is to investigate the feasibility of a computer vision system capable of automatically distinguishing original paint from a repainted vehicle panel using images acquired with a smartphone.
 
-### Tableau 1 — Synthèse des techniques SOTA
+In the automotive field, this task is generally performed by an expert who combines several visual indicators with their professional experience. A repainted panel may exhibit more or less pronounced differences depending on the quality of the repair, making automatic detection particularly challenging.
 
-| Technique                                           | Principe                                                                                                                 | Signal exploité par l'IA                                                   | Avantage principal                                                                                        | Limite principale                                                                                               | Maturité | Statut                               |
-| :-------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------- | :-------- | :----------------------------------- |
-| **RGB smartphone**                            | Capture classique par caméra mobile.                                                                                    | Image RGB.                                                                  | Simplicité maximale et disponibilité du matériel.                                                      | Sensibilité aux reflets, à l'éclairage et aux traitements ISP.                                               | Élevée  | Baseline de référence              |
-| **Module macroscopique clip-on tout-en-un**   | Adaptation optique portable intégrant grossissement macro, LED d'éclairage et filtre polarisant CPL sur le smartphone. | RGB haute résolution effective (~1300 pixels/mm) avec reflets contrôlés. | Solution tout-en-un : grossissement, éclairage et polarisation intégrés dans un même module portable. | Champ de vision réduit (~6 mm), nécessite multi-patches par véhicule.                                        | Élevée  | 🟢**Retenu (Setup principal)** |
-| **Éclairage LED rasant externe**             | Éclairage contrôlé sur la zone observée avec incidence rasante (15-25°).                                            | RGB avec micro-relief révélé par ombres portées.                        | Révèle la texture par ombres portées, stabilise l'acquisition.                                         | Positionnement précis requis, complexité opérationnelle, accessoire séparé à manipuler.                   | Élevée  | Écarté (intégré au module macro) |
-| **Filtre CPL séparé**                       | Polarisation circulaire montée sur clip smartphone.                                                                     | RGB filtré optiquement.                                                    | Supprime les reflets spéculaires du vernis.                                                              | Réglage optique manuel nécessaire, accessoire séparé à manipuler.                                          | Élevée  | Écarté (intégré au module macro) |
-| **Caméra monochrome USB**                    | Capteur CMOS sans filtre Bayer, sensibilité +30%, résolution effective doublée.                                       | Signal monochrome à contraste maximal.                                     | Meilleur rapport signal/bruit en basse lumière.                                                          | Résolution nominale faible (1-5 MP vs 48 MP smartphone), nécessite PC portable, non portable au sens terrain. | Moyenne   | Écarté (perspective V2 poste fixe) |
-| **Spectrophotométrie portable**              | Mesure locale des propriétés colorimétriques en espace L\*a\*b\*.                                                     | Signature spectrale / valeurs Lab.                                          | Mesure colorimétrique précise (ΔE < 0.5).                                                              | Ne fournit pas une image 2D complète, coût utilisateur élevé, temps de capture long.                        | Moyenne   | Écarté du produit                  |
-| **Calibration ColorChecker (charte Macbeth)** | Référence physique étalonnée à 24 patchs pour étalonnage colorimétrique.                                          | RGB corrigé par matrice CCM.                                               | Référence colorimétrique fiable et reproductible.                                                      | Contrainte UX et manipulation terrain.                                                                          | Élevée  | Référence laboratoire              |
-| **Déflectométrie d'apparence**              | Analyse des réflexions de motifs structurés projetés sur la surface.                                                  | Signature géométrique de surface (waviness, DOI, haze).                   | Très riche pour l'étude du vernis et des micro-défauts.                                                | Acquisition lourde et peu mobile, coût prohibitif (25 000-150 000 €).                                         | Élevée  | Référence industrielle             |
+The main indicators that may reveal a repainting operation include:
 
----
+- Clear-coat microtexture (orange peel effect);
+- Local variations in gloss;
+- Differences in light reflection;
+- Slight color deviations;
+- Surface finishing defects (dust, inclusions, polishing marks, etc.).
 
-## 3. Configurations expérimentales
+However, these indicators are not always present, and their visibility depends heavily on lighting conditions, paint type, vehicle color, and repair quality.
 
-Les configurations expérimentales servent à comparer des combinaisons concrètes de capture afin d'identifier le meilleur compromis pour le terrain, en tenant compte des contraintes de coût, portabilité et faisabilité dans le cadre du stage.
+Within the scope of this internship, the study focuses primarily on observing **surface microtexture**, as it is a physical indicator directly related to the application process and the behavior of the clear coat during drying. This texture becomes easier to observe through macro imaging performed using a smartphone equipped with a dedicated optical attachment.
 
-### Tableau 1 — Benchmark des setups
-
-| Setup             | Composition                                                                              | Objectif                                                                                                                 | Coût indicatif   | Temps           | Contraintes                           | Performance estimée                                                          | Portabilité terrain     | Décision                        |
-| :---------------- | :--------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------- | :---------------- | :-------------- | :------------------------------------ | :---------------------------------------------------------------------------- | :----------------------- | :------------------------------- |
-| **Setup A** | Smartphone RGB seul à 40 cm.                                                            | Baseline minimale.                                                                                                       | 0 DT              | Très court     | Très faibles                         | Faible (~40 pixels/mm)                                                        | Très élevée           | Écarté                         |
-| **Setup B** | Spectrophotomètre portable (Spectro 1 Mobile).                                          | Mesure spectrale ponctuelle de référence.                                                                              | 1008 DT           | Long            | Moyennes                              | Élevée sur la couleur, faible sur l'image 2D                                | Moyenne                  | Écarté du produit              |
-| **Setup C** | Smartphone + LED NEEWER + Filtre CPL séparé à 40 cm (accessoires séparés).          | Amélioration texture par éclairage rasant et polarisation.                                                             | 242 DT            | Court           | Moyennes (3 accessoires à manipuler) | Moyenne (~40 pixels/mm, résolution limitée à 40 cm)                        | Élevée                 | Écarté (macro plus efficace)   |
-| **Setup D** | Calibrite ColorChecker Classic Mini.                                                     | Référence colorimétrique labo.                                                                                        | 290 DT            | Moyen           | Élevées                             | Très élevée en calibration, faible en usage terrain                        | Faible                   | Écarté du produit              |
-| **Setup E** | Rhopoint TAMS - Total Appearance Measurement System.                                     | Déflectométrie d'apparence industrielle.                                                                               | 63000 DT          | Long            | Très élevées                       | Très élevée en signal géométrique                                        | Faible                   | Référence industrielle         |
-| **Setup F** | **Module macroscopique Apexel tout-en-un (grossissement + LED + CPL intégrés).** | **Analyse macroscopique haute résolution du signal texture avec accessoires intégrés dans un seul dispositif.** | **~180 DT** | **Court** | **Faibles (1 seul module)**     | **Élevée (~1300 pixels/mm, résolution ~30x supérieure au Setup C)** | **Très élevée** | 🟢**Choix optimal retenu** |
+The objective is not to demonstrate that microtexture is the only criterion for identifying a repaint, but rather to assess whether this information, when processed by a Deep Learning model, is sufficient to achieve an initial reliable classification under acquisition conditions compatible with mobile use.
 
 ---
 
-## 4. Guide Méthodologique du Benchmark
+## 2. SOTA Approach — Overview of Candidate Techniques
 
-L'évaluation comparative des configurations optiques a été révisée en Semaine 4 suite à l'identification du module macroscopique Apexel tout-en-un comme solution optimale. Ce module intègre dans un seul dispositif le grossissement macro, l'éclairage LED et le filtre polarisant CPL, éliminant ainsi la nécessité d'accessoires séparés (Setup C initialement envisagé).
+The SOTA review compares the main candidate techniques for improving the quality of the signal supplied to the AI model, while taking into account the project's portability and cost constraints.
 
-Cette réorientation permet de figer la trajectoire technique et de consacrer exclusivement les semaines suivantes à la collecte du dataset propriétaire terrain (450 à 500 patches macroscopiques en V0.1, objectif à long terme de 1 000 patches inscrit en roadmap V1, classes *Origine / Repeint*) et à l'entraînement du modèle d'IA sur cette configuration unique.
+### Table 1 — Summary of SOTA Techniques
 
-### 4.1. Variables contrôlées et variables testées
+| Technique                                          | Principle                                                                                                                 | Signal exploited by AI                                                          | Main advantage                                                                                           | Main limitation                                                                                              | Maturity | Status                                             |
+| :------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- | :------- | :------------------------------------------------- |
+| **Smartphone RGB**                           | Conventional capture using a mobile camera.                                                                               | RGB image.                                                                      | Maximum simplicity and equipment availability.                                                           | Sensitivity to reflections, lighting, and ISP processing.                                                    | High     | Reference baseline                                 |
+| **All-in-one clip-on macro module**          | Portable optical attachment integrating macro magnification, LED lighting, and a CPL polarizing filter on the smartphone. | Effectively high-resolution RGB (\~1300 pixels/mm) with controlled reflections. | All-in-one solution: magnification, lighting, and polarization integrated into a single portable module. | Reduced field of view (\~6 mm), requiring multiple patches per vehicle.                                      | High     | 🟢**Selected (Main Setup)**                  |
+| **External low-angle LED lighting**          | Controlled illumination of the observed area at a grazing incidence angle (15–25°).                                     | RGB with micro-relief revealed by cast shadows.                                 | Reveals texture through cast shadows and stabilizes image acquisition.                                   | Requires precise positioning, operational complexity, and a separate accessory to handle.                    | High     | Excluded (integrated into the macro module)        |
+| **Separate CPL filter**                      | Circular polarizer mounted on a smartphone clip.                                                                          | Optically filtered RGB.                                                         | Suppresses specular reflections from the clear coat.                                                     | Requires manual optical adjustment and handling of a separate accessory.                                     | High     | Excluded (integrated into the macro module)        |
+| **USB monochrome camera**                    | CMOS sensor without a Bayer filter, +30% sensitivity, effectively doubled resolution.                                     | High-contrast monochrome signal.                                                | Better signal-to-noise ratio in low-light conditions.                                                    | Low nominal resolution (1–5 MP vs. 48 MP smartphone), requires a laptop, and is not portable for field use. | Medium   | Excluded (V2 fixed inspection station perspective) |
+| **Portable spectrophotometry**               | Local measurement of colorimetric properties in the L\*a\*b\* color space.                                                | Spectral signature / Lab values.                                                | Accurate colorimetric measurement (ΔE < 0.5).                                                           | Does not provide a complete 2D image, high user cost, and long capture time.                                 | Medium   | Excluded from the product                          |
+| **ColorChecker calibration (Macbeth chart)** | Calibrated physical reference containing 24 patches for colorimetric calibration.                                         | RGB corrected using a CCM matrix.                                               | Reliable and reproducible colorimetric reference.                                                        | UX and field-handling constraints.                                                                           | High     | Laboratory reference                               |
+| **Appearance deflectometry**                 | Analysis of reflections from structured patterns projected onto the surface.                                              | Surface geometric signature (waviness, DOI, haze).                              | Rich information for clear-coat and micro-defect analysis.                                               | Complex and poorly suited to mobile acquisition; prohibitive cost (€25,000–150,000).                       | High     | Industrial reference                               |
 
-#### Tableau 1 — Variables contrôlées (stabilisées strictement par le protocole)
+---
 
-| Variable contrôlée                      | Règle opérationnelle appliquée                                                                                                                                        | Objectif méthodologique                                                                                                         |
-| :---------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
-| **Véhicule & zone**                | Même véhicule, plusieurs pièces (capot, ailes, portières, toit, coffre) durant une session.                                                                          | Documenter l'ensemble des zones significatives par véhicule pour l'agrégation multi-patches.                                   |
-| **Distance module-surface**         | Contact quasi-direct (5-10 mm) avec la surface, guidé par la butée physique du module Apexel.                                                                          | Garantir le grossissement optimal et la mise au point automatique du module macro.                                               |
-| **Nombre de patches par pièce**    | 2 patches par pièce sur les zones planes principales.                                                                                                                   | Statistiquement significatif pour classification et agrégation multi-patches.                                                   |
-| **Nombre de pièces par véhicule** | 6 à 8 pièces (capot, aile G, aile D, portière G, portière D, portière arrière G, portière arrière D, coffre).                                                    | Représentativité du véhicule pour verdict global fiable.                                                                      |
-| **Éclairage**                      | LEDs intégrées au module Apexel systématiquement activées.                                                                                                           | Standardiser l'éclairage indépendamment des conditions ambiantes.                                                              |
-| **Polarisation**                    | Filtre CPL intégré au module Apexel actif en permanence.                                                                                                               | Éliminer les reflets spéculaires directement au niveau du module, sans manipulation externe.                                   |
-| **Mise au point**                   | Automatique via optique fixe du module macro (distance de travail 5-10 mm).                                                                                              | Garantir la netteté du signal texture à l'échelle microscopique.                                                              |
-| **Modes de traitement smartphone**  | Utilisation obligatoire du mode Pro/Manuel avec désactivation explicite du HDR automatique, mode Portrait et filtres artistiques. Documentation dans les métadonnées. | Éliminer les biais introduits par les traitements ISP algorithmiques qui altèrent artificiellement la micro-texture du vernis. |
-| **Résolution smartphone**          | 12.5 MP                                                                                                                                                                  | Exploiter la résolution native maximale du capteur pour capturer tous les détails.                                             |
-| **Format d'enregistrement**         | JPEG qualité maximale.                                                                                                                                                  | Préserver l'information haute fréquence contenant la signature texturale.                                                      |
-| **Résolution & IA**                | Format strict de ** 384×384 pixels ** sur backbone**EfficientNet-B0**.                                                                                            | Uniformiser la dimension d'entrée du réseau.                                                                                   |
+## 3. Experimental Configurations
 
-#### Tableau 2 — Variables testées (facteurs d'évaluation de la performance)
+The experimental configurations are intended to compare practical combinations of image acquisition techniques in order to identify the best compromise for field use, taking into account cost, portability, and feasibility constraints within the internship.
 
-| Variable testée                         | Objectif scientifique de la mesure                                                                                           |
-| :--------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| **Couleur carrosserie**            | Évaluer la robustesse du signal texture sur teintes claires réfléchissantes, sombres et métallisées.                    |
-| **Marque et modèle de véhicule** | Évaluer la généralisation du modèle sur diverses marques automobiles.                                                    |
-| **État de peinture**              | Comparer les signatures macroscopiques de peintures d'origine, repeintes en concession et repeintes en atelier indépendant. |
+### Table 1 — Setup Benchmark
 
-### 4.2 Prétraitement des images
+| Setup             | Composition                                                                      | Objective                                                                                                         | Indicative Cost    | Time            | Constraints                      | Estimated Performance                                                           | Field Portability   | Decision                            |
+| :---------------- | :------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------- | :----------------- | :-------------- | :------------------------------- | :------------------------------------------------------------------------------ | :------------------ | :---------------------------------- |
+| **Setup A** | Smartphone RGB only at 40 cm.                                                    | Minimum baseline.                                                                                                 | 0 DT               | Very short      | Very low                         | Low (\~40 pixels/mm)                                                            | Very high           | Excluded                            |
+| **Setup B** | Portable spectrophotometer (Spectro 1 Mobile).                                   | Reference point spectral measurement.                                                                             | 1008 DT            | Long            | Medium                           | High for color, low for 2D imaging                                              | Medium              | Excluded from the product           |
+| **Setup C** | Smartphone + NEEWER LED + separate CPL filter at 40 cm (separate accessories).   | Texture enhancement through grazing illumination and polarization.                                                | 242 DT             | Short           | Medium (3 accessories to handle) | Medium (\~40 pixels/mm, limited resolution at 40 cm)                            | High                | Excluded (macro is more effective)  |
+| **Setup D** | Calibrite ColorChecker Classic Mini.                                             | Laboratory colorimetric reference.                                                                                | 290 DT             | Medium          | High                             | Very high for calibration, low for field use                                    | Low                 | Excluded from the product           |
+| **Setup E** | Rhopoint TAMS — Total Appearance Measurement System.                            | Industrial appearance deflectometry.                                                                              | 63000 DT           | Long            | Very high                        | Very high for geometric signal analysis                                         | Low                 | Industrial reference                |
+| **Setup F** | **All-in-one Apexel macro module (integrated magnification + LED + CPL).** | **High-resolution macro analysis of the texture signal, with accessories integrated into a single device.** | **\~180 DT** | **Short** | **Low (only one module)**  | **High (\~1300 pixels/mm, approximately 30× the resolution of Setup C)** | **Very high** | 🟢**Optimal choice selected** |
 
-| Étape                                              | Rôle                                                                        | Objectif                                                                                       |
-| :-------------------------------------------------- | :--------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
-| Redimensionnement (384 × 384) pixels               | Adapte l'image macroscopique au format d'entrée du modèle EfficientNet-B0. | Réduire le coût de calcul et standardiser l'entrée.                                         |
-| Normalisation Keras (preprocess_input EfficientNet) | Applique la normalisation standard attendue par le backbone pré-entraîné. | Assurer la compatibilité des statistiques d'entrée avec les poids ImageNet.                  |
-| Finalité globale                                   | Limite les variations non pertinentes tout en préservant le signal texture. | Permettre au modèle de se concentrer sur les caractéristiques discriminantes de la peinture. |
+---
 
-### 4.3. Matrice multicritère de sélection du setup optimal
+## 4. Benchmark Methodological Guide
 
-La sélection du setup final repose sur une analyse multicritère combinant :
+The comparative evaluation of optical configurations was revised in Week 4 following the identification of the all-in-one Apexel macro module as the optimal solution. This module integrates macro magnification, LED lighting, and a CPL polarizing filter into a single device, eliminating the need for separate accessories (the initially considered Setup C).
 
-- les performances attendues selon l'état de l'art ;
-- les contraintes industrielles ;
-- les premiers résultats expérimentaux disponibles.
+This change makes it possible to finalize the technical direction and devote the following weeks exclusively to collecting the proprietary field dataset (450 to 500 macro patches for V0.1, with a long-term target of 1,000 patches included in the V1 roadmap) and training the AI model using this single configuration. The classes are *Original / Repaint*.
 
-> **Note méthodologique** : Les scores ci-dessous constituent une aide à la décision d'ingénierie (analyse multicritère pondérée), et non un benchmark expérimental. Les critères "Qualité du signal texture" et "Performance IA attendue" sont des estimations issues de la littérature et des spécifications constructeur pour les setups non testés (C, B, D, E), et de tests terrain préliminaires pour les setups A et F. Les scores seront complétés par des mesures expérimentales en Semaine 4.
+### 4.1. Controlled Variables and Tested Variables
 
-Cette approche permet de comparer des configurations de complexité différente sans nécessiter l'acquisition immédiate de tous les équipements.
+#### Table 1 — Controlled Variables (Strictly Stabilized by the Protocol)
 
-Le choix final est effectué selon un score global :
+| Controlled Variable                    | Operational Rule Applied                                                                                                                                    | Methodological Objective                                                                                           |
+| :------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| **Vehicle & area**               | Same vehicle, with several panels (hood, fenders, doors, roof, trunk) captured during one session.                                                          | Document all significant areas of each vehicle for multi-patch aggregation.                                        |
+| **Module-to-surface distance**   | Near-direct contact (5–10 mm) with the surface, guided by the physical stop of the Apexel module.                                                          | Ensure optimal magnification and automatic focusing of the macro module.                                           |
+| **Number of patches per panel**  | 2 patches per panel on the main flat areas.                                                                                                                 | Provide a statistically meaningful basis for classification and multi-patch aggregation.                           |
+| **Number of panels per vehicle** | 6 to 8 panels (hood, left fender, right fender, left door, right door, rear left door, rear right door, trunk).                                             | Ensure vehicle representativeness for a reliable overall verdict.                                                  |
+| **Lighting**                     | LEDs integrated into the Apexel module are always activated.                                                                                                | Standardize lighting independently of ambient conditions.                                                          |
+| **Polarization**                 | CPL filter integrated into the Apexel module remains permanently active.                                                                                    | Eliminate specular reflections directly at module level, without external handling.                                |
+| **Focus**                        | Automatic, through the fixed optics of the macro module (working distance: 5–10 mm).                                                                       | Ensure sharpness of the texture signal at the microscopic scale.                                                   |
+| **Smartphone processing modes**  | Mandatory use of Pro/Manual mode, with explicit disabling of automatic HDR, Portrait mode, and artistic filters. Documentation is included in the metadata. | Eliminate biases introduced by algorithmic ISP processing that may artificially alter the clear-coat microtexture. |
+| **Smartphone resolution**        | 12.5 MP                                                                                                                                                     | Use the sensor's maximum native resolution to capture all details.                                                 |
+| **Recording format**             | Maximum-quality JPEG.                                                                                                                                       | Preserve high-frequency information containing the textural signature.                                             |
+| **Resolution & AI**              | Strict format of**384×384 pixels** for the **EfficientNet-B0** backbone.                                                                       | Standardize the network input dimensions.                                                                          |
+
+#### Table 2 — Tested Variables (Performance Evaluation Factors)
+
+| Tested Variable                  | Scientific Measurement Objective                                                                                               |
+| :------------------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
+| **Bodywork color**         | Evaluate the robustness of the texture signal on reflective light colors, dark colors, and metallic finishes.                  |
+| **Vehicle make and model** | Evaluate model generalization across different automotive brands.                                                              |
+| **Paint condition**        | Compare the macro signatures of original factory paint, dealership repaints, and repaints performed by independent body shops. |
+
+### 4.2. Image Preprocessing
+
+| Step                                                    | Role                                                                     | Objective                                                                    |
+| :------------------------------------------------------ | :----------------------------------------------------------------------- | :--------------------------------------------------------------------------- |
+| Resizing (384 × 384 pixels)                            | Adapts the macro image to the EfficientNet-B0 model input format.        | Reduce computational cost and standardize the input.                         |
+| Keras normalization (`preprocess_input` EfficientNet) | Applies the standard normalization expected by the pre-trained backbone. | Ensure compatibility between input statistics and ImageNet weights.          |
+| Overall purpose                                         | Limits irrelevant variations while preserving the texture signal.        | Allow the model to focus on the discriminative characteristics of the paint. |
+
+### 4.3. Multi-Criteria Matrix for Selecting the Optimal Setup
+
+The final setup selection is based on a multi-criteria analysis combining:
+
+- Expected performance according to the state of the art;
+- Industrial constraints;
+- Available preliminary experimental results.
+
+> **Methodological note**: The scores below constitute an engineering decision-support tool (weighted multi-criteria analysis), not an experimental benchmark. The criteria "Texture Signal Quality" and "Expected AI Performance" are estimates based on the literature and manufacturer specifications for setups that have not been tested (C, B, D, E), and on preliminary field tests for setups A and F. The scores will be supplemented with experimental measurements in Week 4.
+
+This approach makes it possible to compare configurations of different levels of complexity without requiring the immediate acquisition of all equipment.
+
+The final choice is based on an overall score:
 
 $$
 Score_{setup} = \sum_{i=1}^{n} W_i \times S_i
 $$
 
-avec $W_i$ : poids du critère, $S_i$ : score attribué au setup pour ce critère (1 = faible → 5 = excellent).
+where \(W_i\) is the criterion weight and \(S_i\) is the score assigned to the setup for that criterion (1 = low → 5 = excellent).
 
-#### Tableau 1 — Évaluation pondérée des setups
+#### Table 1 — Weighted Evaluation of Setups
 
-*Notation : 1 (faible) → 5 (excellent). Les scores des Setups B, C, D et E sont des estimations basées sur la littérature et les spécifications constructeur (non mesurés expérimentalement) ; les Setups A et F font l'objet de tests terrain réels.*
+*Rating: 1 (low) → 5 (excellent). The scores for Setups B, C, D, and E are estimates based on the literature and manufacturer specifications (not experimentally measured); Setups A and F have undergone actual field tests.*
 
-| Critère d'arbitrage évalué          | Poids ($W_i$) |         Setup A*(Smartphone seul)*         |         Setup B*(Spectrophotométrie)*         |      Setup C*(LED + CPL séparé)*      |       Setup D*(ColorChecker)*       |          Setup E*(Rhopoint TAMS)*          | **Setup F [Choix cible]** *(Module Macro tout-en-un)* |
-| :------------------------------------- | :-------------: | :-------------------------------------------: | :----------------------------------------------: | :----------------------------------------: | :------------------------------------: | :-------------------------------------------: | :-----------------------------------------------------------: |
-| **Qualité du signal texture**   |       25       |                       1                       |                        1                        |                     2                     |                   3                   |                       5                       |                          **5**                          |
-| **Performance IA attendue**      |       25       |                       2                       |                        3                        |                     3                     |                   4                   |                       5                       |                          **5**                          |
-| **Gestion des reflets**          |       15       |                       1                       |                        2                        |                     5                     |                   4                   |                       5                       |                          **5**                          |
-| **Temps de capture (<90s)**      |       10       |                       5                       |                        2                        |                     4                     |                   3                   |                       1                       |                          **5**                          |
-| **Coût (contrainte ≤ 250 DT)** |       10       |                       5                       |                        2                        |                     4                     |                   3                   |                       1                       |                          **4**                          |
-| **Portabilité**                 |       10       |                       5                       |                        3                        |                     4                     |                   2                   |                       1                       |                          **5**                          |
-| **Disponibilité**               |        5        |                       5                       |                        1                        |                     4                     |                   1                   |                       1                       |                          **5**                          |
-| **SCORE TOTAL / 5**              | **100%** |              **2.55 / 5**              |                **2.20 / 5**                |             **3.25 / 5**             |           **3.30 / 5**           |              **3.50 / 5**              |                     **🟢 4.85 / 5**                     |
-| **INTERPRÉTATION & DÉCISION**  |       —       | ❌ Baseline simple (résolution insuffisante) | ❌ Ne fournit pas d'image 2D compatible avec CNN | ❌ Résolution effective limitée à 40 cm | ❌ Précis (trop contraignant terrain) | ❌ Fort potentiel (trop complexe et coûteux) |         🟢**Meilleur compromis (Setup Retenu)**         |
+| Evaluation Criterion                  | Weight (\(W_i\)) |         Setup A*(Smartphone only)*         |           Setup B*(Spectrophotometry)*           |     Setup C*(Separate LED + CPL)*     |          Setup D*(ColorChecker)*          |          Setup E*(Rhopoint TAMS)*          | **Setup F [Target Choice]** *(All-in-one Macro Module)* |
+| :------------------------------------ | :--------------: | :------------------------------------------: | :-------------------------------------------------: | :--------------------------------------: | :-----------------------------------------: | :-------------------------------------------: | :-------------------------------------------------------------: |
+| **Texture signal quality**      |        25        |                      1                      |                          1                          |                    2                    |                      3                      |                       5                       |                           **5**                           |
+| **Expected AI performance**     |        25        |                      2                      |                          3                          |                    3                    |                      4                      |                       5                       |                           **5**                           |
+| **Reflection management**       |        15        |                      1                      |                          2                          |                    5                    |                      4                      |                       5                       |                           **5**                           |
+| **Capture time (<90s)**         |        10        |                      5                      |                          2                          |                    4                    |                      3                      |                       1                       |                           **5**                           |
+| **Cost (constraint ≤ 250 DT)** |        10        |                      5                      |                          2                          |                    4                    |                      3                      |                       1                       |                           **4**                           |
+| **Portability**                 |        10        |                      5                      |                          3                          |                    4                    |                      2                      |                       1                       |                           **5**                           |
+| **Availability**                |        5        |                      5                      |                          1                          |                    4                    |                      1                      |                       1                       |                           **5**                           |
+| **TOTAL SCORE / 5**             |  **100%**  |              **2.55 / 5**              |                 **2.20 / 5**                 |            **3.25 / 5**            |             **3.30 / 5**             |              **3.50 / 5**              |                      **🟢 4.85 / 5**                      |
+| **INTERPRETATION & DECISION**   |        —        | ❌ Simple baseline (insufficient resolution) | ❌ Does not provide a 2D image compatible with CNNs | ❌ Effective resolution limited at 40 cm | ❌ Accurate (too restrictive for field use) | ❌ High potential (too complex and expensive) |          🟢**Best compromise (Selected Setup)**          |
 
-### 4.5. Gestion des données et vérité terrain
+### 4.5. Data Management and Ground Truth
 
-Chaque acquisition est associée à des métadonnées permettant d'assurer la traçabilité du dataset.
+Each acquisition is associated with metadata to ensure dataset traceability.
 
-| Information             | Exemple                                                   |
-| :---------------------- | :-------------------------------------------------------- |
-| Setup utilisé          | A / F                                                     |
-| Smartphone              | Xiaomi Redmi Note 12 (référence dataset)                |
-| Véhicule               | Marque, modèle, année                                   |
-| Pièce inspectée       | Capot, aile, portière, toit, coffre                      |
-| Position du patch       | Numéro (1 ou 2) et zone approximative (centre, latéral) |
-| Couleur peinture        | Claire, sombre, métallisée                              |
-| Conditions extérieures | Soleil, ombre, météo, intérieur atelier                |
-| Annotation              | Origine / Repeint                                         |
+| Information         | Example                                             |
+| :------------------ | :-------------------------------------------------- |
+| Setup used          | A / F                                               |
+| Smartphone          | Xiaomi Redmi Note 12 (dataset reference)            |
+| Vehicle             | Make, model, year                                   |
+| Inspected panel     | Hood, fender, door, roof, trunk                     |
+| Patch position      | Number (1 or 2) and approximate area (center, side) |
+| Paint color         | Light, dark, metallic                               |
+| External conditions | Sunlight, shade, weather, workshop interior         |
+| Annotation          | Original / Repaint                                  |
 
-La vérité terrain est définie à partir des informations disponibles (historique véhicule, expertise humaine ou mesure externe si nécessaire).
+Ground truth is defined using the available information (vehicle history, human expertise, or external measurement when necessary).
 
-| Classe  | Description                         |
-| :------ | :---------------------------------- |
-| Origine | Peinture d'usine confirmée         |
-| Repeint | Modification de peinture confirmée |
+| Class    | Description                  |
+| :------- | :--------------------------- |
+| Original | Confirmed factory paint      |
+| Repaint  | Confirmed paint modification |
 
-Le dataset propriétaire constitue la référence finale pour l'entraînement et l'évaluation.
+The proprietary dataset constitutes the final reference for training and evaluation.
 
-#### Tableau 1 — Stratégie de classification et gestion de l'état Incertain
+#### Table 1 — Classification Strategy and Management of the Uncertain State
 
-> **Décision architecturale** : Le modèle est entraîné sur **2 classes** uniquement (Origine / Repeint). L'état "Incertain" n'est pas une classe entraînée — c'est un état de sortie produit automatiquement en post-traitement lorsque la confiance maximale du modèle est inférieure à un seuil à déterminer expérimentalement (valeur initiale : 0.65). Cette approche est cohérente avec les pratiques industrielles de classification binaire avec seuil de rejet.
+> **Architectural decision**: The model is trained using **only 2 classes** (Original / Repaint). The "Uncertain" state is not a trained class — it is an output state automatically generated during post-processing when the model's maximum confidence is below a threshold to be determined experimentally (initial value: 0.65). This approach is consistent with industrial practices for binary classification with a rejection threshold.
 
-| Phase du Pipeline                               | Action Opérationnelle Terrain / Code                                                                                                                                                                                                                  | Objectif Méthodologique & Impact IA                                                                 |
-| :---------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------- |
-| **1. Capture Initiale**                   | - Capture d'environ**200 patches macroscopiques** certifiés d'usine (*Origine*).- Capture d'environ **200 patches macroscopiques** certifiés retravaillés (*Repeint*).- Les cas sans confirmation fiable sont écartés du dataset. | Constituer une base de données v0.1 propre sur 2 classes uniquement, quantitativement équilibrée. |
-| **2. Filtrage qualité post-acquisition** | Exclusion des patches flous, mal exposés ou avec un mauvais contact module-surface.                                                                                                                                                                   | Éliminer les données techniquement non fiables.                                                    |
-| **3. Entraînement**                      | EfficientNet-B0 entraîné sur**2 classes binaires** : Origine et Repeint. Aucune troisième classe.                                                                                                                                             | Modèle binaire propre, sans bruit de classe ambiguë.                                               |
-| **4. Post-traitement à l'inférence**    | Si`max(softmax_output) ≥ seuil` → classe prédite (Origine ou Repeint).Si `max(softmax_output) < seuil` → état "Incertain" (flag de rejet).                                                                                                    | Produire un verdict avec niveau de confiance contrôlé.                                             |
-| **5. Optimisation du seuil**              | Le seuil de rejet sera optimisé sur le jeu de validation (grid search sur la courbe précision/recall). Valeur initiale : 0.65.                                                                                                                       | Trouver le meilleur équilibre faux positifs / cas rejetés.                                         |
+| Pipeline Phase                                  | Operational Action in the Field / Code                                                                                                                                                                                                               | Methodological Objective & AI Impact                                              |
+| :---------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
+| **1. Initial Capture**                    | - Capture approximately**200 certified factory-finish macro patches** (*Original*).- Capture approximately **200 certified repaired macro patches** (*Repaint*).- Cases without reliable confirmation are excluded from the dataset. | Build a clean V0.1 database containing only 2 classes, with quantitative balance. |
+| **2. Post-Acquisition Quality Filtering** | Exclude blurry, poorly exposed patches or patches with inadequate module-to-surface contact.                                                                                                                                                         | Eliminate technically unreliable data.                                            |
+| **3. Training**                           | EfficientNet-B0 trained on**2 binary classes**: Original and Repaint. No third class.                                                                                                                                                          | Build a clean binary model without ambiguous class noise.                         |
+| **4. Inference Post-Processing**          | If`max(softmax_output) ≥ threshold` → predicted class (Original or Repaint). If `max(softmax_output) < threshold` → "Uncertain" state (rejection flag).                                                                                       | Produce a verdict with a controlled confidence level.                             |
+| **5. Threshold Optimization**             | The rejection threshold will be optimized on the validation set (grid search on the precision/recall curve). Initial value: 0.65.                                                                                                                    | Find the best balance between false positives and rejected cases.                 |
 
 ---
 
-### 4.6. Architecture du modèle IA
+### 4.6. AI Model Architecture
 
-L'objectif est de classer automatiquement une pièce de carrosserie selon deux catégories principales :
+The objective is to automatically classify a body panel into two main categories:
 
-- Origine ;
-- Repeint.
+- Original;
+- Repaint.
 
-Avec un état "Incertain" produit en post-traitement lorsque la confiance du modèle est insuffisante.
+An "Uncertain" state is generated during post-processing when the model's confidence is insufficient.
 
-Le modèle exploite comme information principale la micro-texture de surface (peau d'orange) capturée par le Setup F (module macroscopique Apexel tout-en-un). L'architecture repose sur une approche patch par patch avec agrégation multi-patches pour établir un verdict au niveau du véhicule.
+The model primarily uses surface microtexture (orange peel effect) captured by Setup F (all-in-one Apexel macro module). The architecture is based on a patch-by-patch approach, with multi-patch aggregation to establish a vehicle-level verdict.
 
-| Signal                                          | Rôle dans le système                                                                                                              |
-| :---------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| **Texture macroscopique (peau d'orange)** | Signal physique principal, exploité via EfficientNet-B0 sur patches RGB haute résolution acquis avec le module Apexel tout-en-un. |
-| **Couleur (implicite)**                   | Information secondaire apprise automatiquement par les couches profondes du CNN, sans traitement colorimétrique dédié.           |
+| Signal                                       | Role in the System                                                                                                               |
+| :------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| **Macro texture (orange peel effect)** | Main physical signal, processed using EfficientNet-B0 on high-resolution RGB patches acquired with the all-in-one Apexel module. |
+| **Color (implicit)**                   | Secondary information learned automatically by the CNN's deep layers, without dedicated colorimetric processing.                 |
 
-Pipeline général :
+General pipeline:
 
 ```text
-               Acquisition de l'image
-      (smartphone + Module Apexel tout-en-un)
-      [LED intégrées + CPL intégré activés]
-                      │
-                      ▼
-        Acquisition avec le Setup F
-     (Grossissement + LED rasant + CPL intégrés)
-                      │
-                      ▼
-        15-20 patches par véhicule
-     (2 patches par pièce sur 6-8 pièces)
-                      │
-                      ▼
-           Prétraitement OpenCV
-     • Redimensionnement (384×384)
-     • Normalisation Keras (preprocess_input)
-                      │
-                      ▼
-          Modèle IA EfficientNet-B0
-      (Transfer Learning - Classification binaire)
-                      │
-                      ▼
-      Prédiction par patch + Score de confiance
-                      │
-                      ▼
-      Filtrage par seuil de rejet (initial : 0.65)
-      - Confiance ≥ seuil → Origine ou Repeint
-      - Confiance < seuil → Incertain (flag)
-                      │
-                      ▼
-      Agrégation par vote pondéré par la confiance
-                      │
-                      ▼
-      Verdict véhicule + Rapport détaillé par pièce
+                 Image acquisition
+       (smartphone + all-in-one Apexel Module)
+       [Integrated LEDs + integrated CPL activated]
+                            │
+                            ▼
+                 Acquisition using Setup F
+          (Magnification + integrated grazing LED + CPL)
+                            │
+                            ▼
+                  15–20 patches per vehicle
+              (2 patches per panel across 6–8 panels)
+                            │
+                            ▼
+                    OpenCV preprocessing
+                  • Resizing (384×384)
+                  • Keras normalization (preprocess_input)
+                            │
+                            ▼
+                 EfficientNet-B0 AI Model
+                 (Transfer Learning - Binary Classification)
+                            │
+                            ▼
+             Prediction per patch + Confidence Score
+                            │
+                            ▼
+              Rejection threshold filtering (initial: 0.65)
+              - Confidence ≥ threshold → Original or Repaint
+              - Confidence < threshold → Uncertain (flag)
+                            │
+                            ▼
+             Confidence-weighted voting aggregation
+                            │
+                            ▼
+             Vehicle verdict + Detailed report per panel
 ```
 
-Le pipeline repose sur une acquisition macroscopique à contact quasi-direct avec la surface via le Setup F, suivie d'un prétraitement OpenCV minimaliste (redimensionnement et normalisation Keras), puis d'une inférence par patch via EfficientNet-B0. Un système de filtrage par seuil de confiance produit l'état "Incertain" pour les patches ambigus, et une couche d'agrégation par vote pondéré par la confiance produit le verdict final au niveau du véhicule ainsi qu'un diagnostic par pièce. La simplicité du pipeline est un choix méthodologique délibéré : en déplaçant la maîtrise du signal vers l'acquisition matérielle (Setup F), la chaîne de traitement d'image reste courte et robuste, réduisant les risques d'introduction de biais artificiels.
+The pipeline is based on macro acquisition with near-direct contact with the surface through Setup F, followed by minimal OpenCV preprocessing (resizing and Keras normalization), and then patch-level inference using EfficientNet-B0. A confidence-threshold filtering system produces the "Uncertain" state for ambiguous patches, while a confidence-weighted voting aggregation layer produces the final vehicle-level verdict as well as a diagnosis for each panel.
 
-## Principe d'architecture : division des rôles entre acquisition, prétraitement et IA
+The simplicity of the pipeline is a deliberate methodological choice: by shifting signal control towards hardware acquisition (Setup F), the image-processing pipeline remains short and robust, reducing the risk of introducing artificial biases.
 
-La performance du système ne repose pas uniquement sur le modèle d'intelligence artificielle. Chaque bloc du pipeline possède une fonction spécifique permettant de réduire la complexité globale du problème.
+## Architectural Principle: Division of Responsibilities Between Acquisition, Preprocessing, and AI
 
-| Élément du système                              | Mission principale                                                                    | Rôle dans la réduction de complexité                                                                                                                                                             |
-| :------------------------------------------------- | :------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Setup F (Module Macro Apexel tout-en-un)** | Révéler le micro-relief en pixel-perfect avec éclairage et polarisation intégrés | Optimiser physiquement l'acquisition en fournissant une résolution effective largement supérieure à une capture standard, avec tous les accessoires intégrés dans un seul dispositif portable. |
-| **Prétraitement OpenCV (minimal)**          | Adapter les images au format d'entrée du modèle                                     | Standardiser sans altérer le signal texture ; complexité volontairement réduite.                                                                                                                 |
-| **Modèle IA (EfficientNet-B0)**             | Extraire automatiquement les caractéristiques discriminantes de texture par patch    | Classifier chaque patch en Origine ou Repeint avec score de confiance.                                                                                                                              |
-| **Seuil de rejet de confiance**              | Produire l'état "Incertain" pour les prédictions ambiguës                          | Éviter les décisions à faible confiance en levant explicitement l'ambiguïté.                                                                                                                   |
-| **Couche d'agrégation par vote pondéré**  | Consolider les prédictions par véhicule via vote pondéré par la confiance         | Produire un verdict global fiable et un diagnostic détaillé par zone, sans règles arbitraires.                                                                                                   |
+System performance does not depend solely on the artificial intelligence model. Each pipeline block has a specific function that helps reduce the overall complexity of the problem.
 
-### Conclusion architecturale
+| System Element                                         | Main Function                                                                             | Role in Reducing Complexity                                                                                                                                                     |
+| :----------------------------------------------------- | :---------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Setup F (All-in-one Apexel Macro Module)**     | Reveal micro-relief with pixel-level detail through integrated lighting and polarization. | Physically optimize acquisition by providing an effective resolution significantly higher than standard capture, with all accessories integrated into a single portable device. |
+| **OpenCV preprocessing (minimal)**               | Adapt images to the model input format.                                                   | Standardize images without altering the texture signal; complexity is deliberately reduced.                                                                                     |
+| **AI model (EfficientNet-B0)**                   | Automatically extract discriminative texture features from each patch.                    | Classify each patch as Original or Repaint with a confidence score.                                                                                                             |
+| **Confidence rejection threshold**               | Produce the "Uncertain" state for ambiguous predictions.                                  | Avoid low-confidence decisions by explicitly identifying ambiguity.                                                                                                             |
+| **Confidence-weighted voting aggregation layer** | Consolidate predictions at vehicle level through confidence-weighted voting.              | Produce a reliable overall verdict and a detailed diagnosis for each area, without arbitrary rules.                                                                             |
 
-Cette approche suit un principe classique des systèmes de vision industrielle :
+### Architectural Conclusion
 
-**améliorer le signal avant d'augmenter la complexité du modèle.**
+This approach follows a classical principle of industrial vision systems:
 
-En déplaçant la maîtrise de la difficulté vers l'acquisition (Setup F macroscopique tout-en-un) et une approche patch par patch avec agrégation par vote pondéré par la confiance, il devient possible d'utiliser une architecture légère adaptée à un déploiement mobile, avec un pipeline logiciel volontairement court et robuste.
+**Improve the signal before increasing model complexity.**
 
-### 4.7 Choix du modèle Deep Learning
+By shifting the main challenge towards acquisition (all-in-one macro Setup F) and using a patch-by-patch approach with confidence-weighted voting aggregation, it becomes possible to use a lightweight architecture suitable for mobile deployment, with a deliberately short and robust software pipeline.
 
-| Modèle                                | Avantages                                                                                                    | Inconvénients / Limites                                                                                                     | Décision R&D                       |
-| :------------------------------------- | :----------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- | :---------------------------------- |
-| **ResNet-50**                    | Backbone de référence en vision industrielle carrosserie*(cf. Semitela et al., 2025)*.                   | Volume de paramètres élevé (25M), lourd en calcul Edge et risque de surapprentissage (*overfitting*) sur petit dataset. | ❌**Non retenu**              |
-| **ViT** *(Vision Transformer)* | Excellente capacité d'attention et de corrélation contextuelle globale sur les formes.                     | Nécessite un volume massif de données d'entraînement pour converger (absence de biais inductif).                          | ❌**Non retenu**              |
-| **ConvNeXt**                     | Architecture moderne, hautement performante sur les tâches de segmentation complexes.                       | Coût computationnel élevé, empreinte mémoire et vitesse d'inférence défavorables pour le mobile.                       | ❌**Non retenu**              |
-| **EfficientNet-B0**              | **Ultra-léger (5M de paramètres), précis, optimisé pour l'embarqué via le *Compound Scaling*.** | Sensible à la qualité géométrique du redimensionnement initial (exige un format strict 224×224).                        | 🟢**RETENU (Backbone Cible)** |
+### 4.7. Deep Learning Model Selection
 
-**Justification du choix d'EfficientNet-B0 :**
+| Model                                  | Advantages                                                                                                               | Disadvantages / Limitations                                                                                                 | R&D Decision                           |
+| :------------------------------------- | :----------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :------------------------------------- |
+| **ResNet-50**                    | Reference backbone in industrial automotive vision*(see Semitela et al., 2025)*.                                       | High number of parameters (25M), computationally intensive for Edge deployment, and risk of overfitting on a small dataset. | ❌**Not selected**               |
+| **ViT** *(Vision Transformer)* | Excellent attention and global contextual correlation capabilities for shapes.                                           | Requires a massive training dataset to converge (absence of inductive bias).                                                | ❌**Not selected**               |
+| **ConvNeXt**                     | Modern architecture with high performance on complex segmentation tasks.                                                 | High computational cost, memory footprint, and inference speed unfavorable for mobile devices.                              | ❌**Not selected**               |
+| **EfficientNet-B0**              | **Ultra-lightweight (5M parameters), accurate, and optimized for embedded applications through Compound Scaling.** | Sensitive to the geometric quality of initial resizing (requires a strict 224×224 format).                                 | 🟢**SELECTED (Target Backbone)** |
 
-- **Optimisation Edge AI** : Volume de paramètres divisé par 5 (5M vs 25M pour ResNet-50), minimisant l'empreinte mémoire RAM et la consommation de batterie sur smartphone.
-- **Vitesse d'inférence** : Vitesse de calcul jusqu'à 4 fois plus rapide sur processeur mobile, garantissant le respect strict de l'objectif expérimental cible de temps de cycle ($\le$ 90 secondes).
-- **Adaptation au Transfer Learning** : Architecture idéale pour converger rapidement sans surapprentissage (overfitting) sur notre volume cible de 450 à 500 patches macroscopiques en V0.1.
-- **Compatibilité TensorFlow Lite** : Conversion native vers format mobile via l'API `keras.applications`, cohérente avec le framework Keras / TensorFlow retenu pour le pipeline.
+**Justification for selecting EfficientNet-B0:**
 
-### 4.8. Stratégie données et robustesse
+- **Edge AI optimization**: Number of parameters reduced by a factor of 5 (5M vs. 25M for ResNet-50), minimizing RAM footprint and battery consumption on smartphones.
+- **Inference speed**: Computational speed up to 4 times faster on mobile processors, ensuring compliance with the strict experimental target cycle time (≤ 90 seconds).
+- **Transfer Learning suitability**: Architecture suited to rapid convergence without overfitting on our target volume of 450 to 500 macro patches in V0.1.
+- **TensorFlow Lite compatibility**: Native conversion to a mobile format through the `keras.applications` API, consistent with the Keras / TensorFlow framework selected for the pipeline.
 
-Le modèle sera testé sur :
+### 4.8. Data Strategy and Robustness
 
-| Facteur                           | But                                                            |
-| :-------------------------------- | :------------------------------------------------------------- |
-| **Plusieurs couleurs**      | Généralisation aux teintes claires, sombres et métallisées |
-| **Différents véhicules**  | Généralisation aux différentes marques et modèles          |
-| **Différentes conditions** | Robustesse ombre / atelier / lumière indirecte                |
+The model will be tested on:
 
-Le tableau ci-dessous synthétise la cartographie des données exploitées pour initialiser et entraîner l'architecture **EfficientNet-B0** :
+| Factor                         | Objective                                                      |
+| :----------------------------- | :------------------------------------------------------------- |
+| **Multiple colors**      | Generalization across light, dark, and metallic finishes.      |
+| **Different vehicles**   | Generalization across different makes and models.              |
+| **Different conditions** | Robustness under shade, workshop lighting, and indirect light. |
 
-| Dataset / Jeu de données                                                                  | Taille / Contenu                                                                                                                                                                                    | Pertinence pour ce stage                                                                                                                                                                                                                                                         | Usage recommandé & Intégration                                                                                                                                                                                             |
-| :----------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **MVTec AD**                                                                         | 5 354 images, 15 catégories d'objets, anomalies industrielles de surface.                                                                                                                          | **Moyenne** : Excellent proxy temporaire pour l'apprentissage des micro-textures et des irrégularités de vernis, mais non spécifique au domaine automobile macroscopique.                                                                                               | Écarté : Non adapté à l'échelle macroscopique du Setup F.                                                                                                                                                               |
-| **Roboflow Paint Defects** *(BuildwellAI)*                                         | 467 images de défauts de peinture automobile (vue globale à distance).                                                                                                                            | **Risque critique d'overfitting :** L'analyse montre que les distributions statistiques sont trop divergentes (vue globale contextuelle vs texture macroscopique *pixel-perfect* de l'APEXEL). Un transfert direct provoquerait un surapprentissage sur le faux domaine. | **Conservé uniquement pour tester techniquement le pipeline** (vérifier le bon fonctionnement du code, du chargement et de l'inférence à blanc) et pour la documentation SOTA. Aucun entraînement de performance. |
-| **CarDD**                                                                            | 4 000 images haute résolution, > 9 000 instances de défauts annotées.                                                                                                                            | **Moyenne** : Utile pour la validation du pipeline technique, mais éloignée du signal cible (dommages mécaniques vs texture de peinture macroscopique).                                                                                                                 | Écarté du pipeline principal.                                                                                                                                                                                              |
-| **Curacel Car Damage**                                                               | 6 839 images de véhicules accidentés ou endommagés sur le terrain.                                                                                                                               | **Moyenne à Élevée** : Utile pour confronter l'IA à la diversité chromatique des constructeurs et aux environnements extérieurs complexes.                                                                                                                           | Écarté du pipeline principal.                                                                                                                                                                                              |
-| **Dataset Propriétaire MALLOULIAUTO v0.1** *(À construire — première version)* | 450-500 patches macroscopiques haute résolution avec métadonnées complètes et labels*Origine / Repeint*, capturés avec Setup F. Les cas sans vérité terrain fiable sont exclus du dataset. | **Maximale** : Cible métier unique et cœur de la R&D du produit **MALLOULIAUTO**.                                                                                                                                                                                  | **Dataset d'entraînement principal (Semaine 5)**. Cette première version sera enrichie si les résultats de validation révèlent un manque de représentativité ou un surapprentissage.                            |
+The following table summarizes the mapping of the data used to initialize and train the **EfficientNet-B0** architecture:
 
-Les datasets publics servent uniquement pour tester le pipeline.
+| Dataset                                                                            | Size / Content                                                                                                                                                                             | Relevance to This Internship                                                                                                                                                                                                                   | Recommended Use & Integration                                                                                                                                                            |
+| :--------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **MVTec AD**                                                                 | 5,354 images, 15 object categories, industrial surface anomalies.                                                                                                                          | **Medium**: Excellent temporary proxy for learning microtextures and clear-coat irregularities, but not specific to macro-scale automotive imaging.                                                                                      | Excluded: Not suitable for the macro scale of Setup F.                                                                                                                                   |
+| **Roboflow Paint Defects** *(BuildwellAI)*                                 | 467 automotive paint defect images (global view from a distance).                                                                                                                          | **Critical overfitting risk:** The analysis shows that the statistical distributions are too different (global contextual view vs. pixel-perfect macrotexture from APEXEL). Direct transfer would cause overfitting to the wrong domain. | **Retained only for technical pipeline testing** (checking that the code, loading, and inference work correctly in a dry run) and for SOTA documentation. No performance training. |
+| **CarDD**                                                                    | 4,000 high-resolution images, more than 9,000 annotated defect instances.                                                                                                                  | **Medium**: Useful for validating the technical pipeline, but far removed from the target signal (mechanical damage vs. macro paint texture).                                                                                            | Excluded from the main pipeline.                                                                                                                                                         |
+| **Curacel Car Damage**                                                       | 6,839 images of crashed or damaged vehicles captured in field conditions.                                                                                                                  | **Medium to High**: Useful for exposing the AI to manufacturers' chromatic diversity and complex outdoor environments.                                                                                                                   | Excluded from the main pipeline.                                                                                                                                                         |
+| **MALLOULIAUTO Proprietary Dataset v0.1** *(To be built — first version)* | 450–500 high-resolution macro patches with complete metadata and*Original / Repaint* labels, captured using Setup F. Cases without reliable ground truth are excluded from the dataset. | **Maximum**: Unique business target and core of MALLOULIAUTO product R&D.                                                                                                                                                                | **Main training dataset (Week 5)**. This first version will be expanded if validation results reveal a lack of representativeness or overfitting.                                  |
 
-Cette découverte confirme scientifiquement la nécessité de constituer un dataset propriétaire cohérent avec le setup d'acquisition final, sans mélange de sources hétérogènes.
+Public datasets are used only to test the pipeline.
 
-### 4.9. Stratégie d'entraînement progressive
+This finding confirms the scientific need to build a proprietary dataset consistent with the final acquisition setup, without mixing heterogeneous sources.
 
-Le développement du modèle est organisé en deux étapes.
+### 4.9. Progressive Training Strategy
 
-La première étape établit une baseline exploitant le signal texture (peau d'orange), signal physique principal du projet.
+Model development is organized into two stages.
 
-La seconde étape ajuste le seuil de rejet de confiance et développe le système d'agrégation multi-patches.
+The first stage establishes a baseline exploiting the texture signal (orange peel effect), which is the project's main physical signal.
+
+The second stage adjusts the confidence rejection threshold and develops the multi-patch aggregation system.
 
 ---
 
-#### Phase 1 — Entraînement de la tête de classification (Backbone gelé)
+#### Phase 1 — Classification Head Training (Frozen Backbone)
 
-Cette phase adapte rapidement le modèle au domaine spécifique de la peau d'orange en gelant les poids pré-entraînés d'ImageNet. Le modèle est entraîné sur **2 classes binaires** (Origine / Repeint) uniquement.
+This phase rapidly adapts the model to the specific orange-peel domain by freezing the ImageNet pre-trained weights. The model is trained using **only 2 binary classes** (Original / Repaint).
 
-Pipeline :
+Pipeline:
 
 ```text
-        Capture Macroscopique
-    (smartphone + Module Apexel tout-en-un)
-               │
-               ▼
-     Prétraitement OpenCV minimal
-    (Redimensionnement 384 ×384 )
-               │
-               ▼
-    Normalisation Keras
-    (preprocess_input EfficientNet)
-               │
-               ▼
-        EfficientNet-B0 Backbone (Gelé)
-        (Poids ImageNet préservés)
-               │
-               ▼
-        Tête de classification personnalisée
-        (Dense + Softmax 2 classes)
-               │
-               ▼
-        Origine / Repeint (avec score de confiance)
+                 Macro Capture
+        (smartphone + all-in-one Apexel Module)
+                            │
+                            ▼
+                 Minimal OpenCV preprocessing
+                    (Resizing 384 × 384)
+                            │
+                            ▼
+                    Keras normalization
+              (EfficientNet preprocess_input)
+                            │
+                            ▼
+                EfficientNet-B0 Backbone (Frozen)
+                    (ImageNet weights preserved)
+                            │
+                            ▼
+                Custom classification head
+                    (Dense + 2-class Softmax)
+                            │
+                            ▼
+             Original / Repaint (with confidence score)
 ```
 
-Configuration Phase 1 :
+Phase 1 configuration:
 
-- **Epochs** : 15-20
-- **Learning rate** : 1e-3
-- **Batch size** : 32
-- **Optimiseur** : Adam
-- **Loss** : Categorical crossentropy
-- **Nombre de classes** : 2 (Origine / Repeint)
+- **Epochs**: 15–20
+- **Learning rate**: 1e-3
+- **Batch size**: 32
+- **Optimizer**: Adam
+- **Loss**: Categorical crossentropy
+- **Number of classes**: 2 (Original / Repaint)
 
-Objectifs :
+Objectives:
 
-- obtenir une première mesure de performance sur le signal texture ;
-- calculer les KPI du benchmark ;
-- évaluer la robustesse du modèle dans les conditions d'acquisition retenues ;
-- identifier les principales erreurs du modèle.
+- Obtain an initial performance measurement on the texture signal;
+- Calculate the benchmark KPIs;
+- Evaluate model robustness under the selected acquisition conditions;
+- Identify the model's main errors.
 
-Métriques évaluées :
+Evaluation metrics:
 
-| Métrique         | Objectif                      |
-| :---------------- | :---------------------------- |
-| AUC               | Séparation Origine / Repeint |
-| Recall Repeint    | Réduction des faux négatifs |
-| F1-score          | Équilibre précision/rappel  |
-| Matrice confusion | Analyse des erreurs           |
-
----
-
-#### Phase 2 — Fine-tuning des dernières couches + Optimisation du seuil de rejet
-
-Cette phase affine les représentations spécifiques au signal texture macroscopique en dégelant les dernières couches du backbone. Le seuil de rejet de confiance est ensuite optimisé sur le jeu de validation.
-
-Configuration Phase 2 :
-
-- **Epochs** : 10-15 supplémentaires
-- **Learning rate** : 1e-5 (réduit)
-- **Couches dégelées** : Dernières 30 couches d'EfficientNet-B0
-- **Régularisation** : Dropout 0.3, Early stopping
-- **Optimisation du seuil de rejet** : Grid search sur le jeu de validation (valeur initiale : 0.65)
+| Metric           | Objective                               |
+| :--------------- | :-------------------------------------- |
+| AUC              | Separation between Original and Repaint |
+| Repaint Recall   | Reduction of false negatives            |
+| F1-score         | Precision/recall balance                |
+| Confusion matrix | Error analysis                          |
 
 ---
 
-#### Système d'Agrégation Multi-Patches par Vote Pondéré
+#### Phase 2 — Fine-Tuning of the Final Layers + Rejection Threshold Optimization
 
-Après classification individuelle de chaque patch et application du seuil de rejet, une couche d'agrégation simple produit le verdict au niveau du véhicule par **vote majoritaire pondéré par la confiance**.
+This phase refines the representations specific to the macrotexture signal by unfreezing the final layers of the backbone. The confidence rejection threshold is then optimized on the validation set.
 
-**Méthode d'agrégation** :
+Phase 2 configuration:
+
+- **Epochs**: 10–15 additional epochs
+- **Learning rate**: 1e-5 (reduced)
+- **Unfrozen layers**: Last 30 layers of EfficientNet-B0
+- **Regularization**: Dropout 0.3, Early Stopping
+- **Rejection threshold optimization**: Grid search on the validation set (initial value: 0.65)
+
+---
+
+#### Multi-Patch Aggregation System Using Weighted Voting
+
+After individually classifying each patch and applying the rejection threshold, a simple aggregation layer produces the vehicle-level verdict through **confidence-weighted majority voting**.
+
+**Aggregation method:**
 
 ```text
-Pour chaque véhicule :
-    1. Récupérer les prédictions des 15-20 patches (classe prédite + score de confiance)
-    2. Exclure les patches dont la confiance < seuil de rejet (état Incertain)
-    3. Sur les patches retenus, calculer le vote pondéré :
-       - Score global "Repeint" = Σ (confiance des patches classés Repeint)
-       - Score global "Origine" = Σ (confiance des patches classés Origine)
-    4. Verdict du véhicule = classe avec le score global le plus élevé
-    5. Si aucun patch retenu (tous rejetés par le seuil) → Véhicule INCERTAIN
+For each vehicle:
+    1. Retrieve predictions for the 15–20 patches (predicted class + confidence score)
+    2. Exclude patches whose confidence < rejection threshold (Uncertain state)
+    3. For the retained patches, calculate the weighted vote:
+       - Overall "Repaint" score = Σ (confidence of patches classified as Repaint)
+       - Overall "Original" score = Σ (confidence of patches classified as Original)
+    4. Vehicle verdict = class with the highest overall score
+    5. If no patch is retained (all rejected by the threshold) → Vehicle UNCERTAIN
 ```
 
-**Justification méthodologique** :
+**Methodological justification:**
 
-Le vote majoritaire pondéré par la confiance est une approche **statistiquement justifiable** et **cohérente avec le paradigme Deep Learning** du projet. Elle évite l'introduction de règles arbitraires (seuils fixés manuellement) et laisse le modèle exprimer sa confiance globale via l'accumulation des scores. Cette approche est standard en classification par patches en vision industrielle.
+Confidence-weighted majority voting is a **statistically justifiable approach** and **consistent with the Deep Learning paradigm** of the project. It avoids introducing arbitrary rules (manually fixed thresholds) and allows the model to express its overall confidence through the accumulation of scores. This approach is standard in patch-based classification in industrial vision.
 
-Cette méthode présente trois avantages :
+This method offers three advantages:
 
-1. **Simplicité** : Aucun hyperparamètre arbitraire à optimiser au niveau de l'agrégation.
-2. **Cohérence** : Respecte le principe "le modèle apprend seul", sans règles manuelles.
-3. **Robustesse** : Un patch très confiant (0.95) pèse plus qu'un patch peu confiant (0.55), ce qui est statistiquement justifié.
+1. **Simplicity**: No arbitrary aggregation-level hyperparameter needs to be optimized.
+2. **Consistency**: Respects the principle that "the model learns on its own", without manual rules.
+3. **Robustness**: A highly confident patch (0.95) carries more weight than a less confident one (0.55), which is statistically justified.
 
-Le seul paramètre à optimiser reste le **seuil de rejet de confiance** (valeur initiale 0.65), déterminé par grid search sur le jeu de validation.
-
----
-
-## 5. Protocole Benchmark v0
-
-| Composante du Protocole               | Valeur de Référence Expérimentale & Spécifications R&D                                                                                                                                                                                                            |
-| :------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Configuration Retenue**       | Setup F (Xiaomi Redmi Note 12 + Module Macroscopique Apexel tout-en-un)                                                                                                                                                                                               |
-| **Signal Principal Exploité**  | Micro-texture macroscopique de surface (peau d'orange)                                                                                                                                                                                                                |
-| **Classes Entraînées**        | Origine / Repeint (binaire)                                                                                                                                                                                                                                           |
-| **État de Sortie Additionnel** | Incertain (généré par seuil de rejet de confiance)                                                                                                                                                                                                                 |
-| **Résolution d'Entrée**       | Format strict et standardisé de**(384×384) pixels**                                                                                                                                                                                                           |
-| **Modèle / Backbone**          | Architecture cible**EfficientNet-B0** *(Transfer Learning)*                                                                                                                                                                                                   |
-| **Framework**                   | **Keras / TensorFlow** *(compatibilité TensorFlow Lite pour déploiement mobile futur)*                                                                                                                                                                      |
-| **Approche**                    | Classification par patch + Seuil de rejet + Agrégation par vote pondéré par confiance                                                                                                                                                                              |
-| **Variables Contrôlées**      | Véhicule, pièce, zone de carrosserie, distance module-surface (contact 5-10 mm), éclairage LED intégré, Xiaomi Redmi Note 12 en mode Pro, 2 patches par pièce sur 6-8 pièces par véhicule.                                                                    |
-| **Variables Testées**          | Marque/modèle de véhicule, couleur de carrosserie, conditions lumineuses résiduelles.                                                                                                                                                                              |
-| **Critères d'Inclusion**       | Patch parfaitement net, contact effectif module-surface, matrice de métadonnées contextuelles complète, capture réalisée avec paramètres ISP contrôlés manuellement.                                                                                          |
-| **Critères d'Exclusion**       | Flou, mauvais contact module-surface, éclairage LED défaillant, patch avec confiance modèle inférieure au seuil (marqué Incertain), annotation incertaine non marquée.                                                                                          |
-| **Sorties Attendues (KPI)**     | **AUC** *(Séparation)*, **Recall Repeint** *(Sensibilité)*, **F1-score inter-smartphones** *(Robustesse ISP)*, **Accuracy véhicule** *(Verdict global après agrégation)*, **Taux d'Incertain** *(Proportion de rejets)*. |
+The only parameter to optimize remains the **confidence rejection threshold** (initial value 0.65), determined through grid search on the validation set.
 
 ---
 
-## 6. Livrables et Objectifs Expérimentaux Cibles
+## 5. Benchmark Protocol v0
 
-> **Note** : Les valeurs ci-dessous sont des **objectifs expérimentaux cibles** et non des seuils de réussite garantis. Ils seront évalués et discutés à la lumière des résultats réels obtenus. En cas de non-atteinte, une analyse des causes racines et des propositions d'amélioration constitueront un livrable à part entière.
-
-Le projet doit impérativement produire :
-
-- une matrice de benchmark ;
-- un dataset macroscopique v0.1 documenté ;
-- un prototype IA de classification patch + seuil + agrégation ;
-- un rapport d'évaluation ;
-- des recommandations produit ;
-- une roadmap d'industrialisation.
-
-Les objectifs expérimentaux cibles sont fixés à :
-
-- **AUC par patch** $\ge$ 0,85.
-- **Recall Repeint par patch** $\ge$ 0,90.
-- **Accuracy véhicule** $\ge$ 0,80 après agrégation multi-patches.
-- **Temps de traitement** $\le$ 90 secondes par véhicule (capture + inférence).
-- **Analyse d'erreurs** : au moins 5 causes racines identifiées et expliquées.
-
-## 7. Perspectives d'évolution
-
-* **Développement d'une application mobile dédiée** : Le déploiement final du produit MALLOULIAUTO nécessitera le développement d'une application mobile native (Android et iOS) qui remplacera l'application caméra générique du smartphone. Cette application accédera directement au capteur photographique via les APIs bas-niveau du système d'exploitation (**CameraX** sur Android, **AVFoundation** sur iOS) pour contrôler programmatiquement l'ensemble des paramètres de capture : désactivation forcée du Beauty Mode, du HDR automatique, du mode Portrait et de tous les filtres computationnels ; verrouillage de l'exposition, de la balance des blancs et de la mise au point ; imposition de la résolution maximale et du format RAW/DNG lorsque supporté. L'utilisateur final n'aurait aucune manipulation technique à effectuer, garantissant la reproductibilité des captures inter-utilisateurs et inter-smartphones. L'application intégrerait également un masque graphique à l'écran, un verrouillage par **gyroscope** bloqué à 45° et une analyse de l'histogramme RGB en temps réel pour intercepter et rejeter les clichés aberrants (*hard cases*) avant l'inférence. Le développement de cette application est **hors périmètre du stage actuel** (contraintes de temps sur les 8 semaines) et constitue la première étape prioritaire de la roadmap V1 pour le déploiement industriel.
-* **Extension colorimétrique par comparaison intra-véhicule** : Pour renforcer la sensibilité du modèle sur les cas de réparations partielles haut de gamme où la signature texturale seule serait insuffisante, une évolution future du produit pourrait exploiter une référence colorimétrique interne au véhicule (typiquement le toit, statistiquement rarement repeint). Cette approche calculerait un écart colorimétrique (ΔE, espace CIELAB) entre le panneau de référence et la pièce inspectée, directement à partir du Setup F existant sans matériel supplémentaire. Elle nécessiterait une calibration empirique préalable du seuil de décision, les valeurs ΔE issues d'une capture smartphone terrain n'étant pas comparables aux seuils spectrophotométriques de laboratoire (typiquement ΔE > 2.0 sous éclairage D65 standardisé).
-* **Filtrage de la luminance (Double espace)** : L'espace sRGB natif mélange la couleur et l'intensité lumineuse sur ses canaux, ce qui rend l'analyse sensible à la météo du parking. Une évolution possible consisterait à passer temporairement en espace **CIELAB** pour normaliser la brillance sur le canal de luminance ($L$), puis à repasser en sRGB. L'utilité serait de neutraliser les biais d'éclairement tout en conservant le format 3 canaux sRGB requis pour le **Transfer Learning** d'EfficientNet-B0.
-* **Extension avec descripteurs de texture classiques** : Si les résultats du stage révèlent des cas difficiles où EfficientNet-B0 confond systématiquement Origine et Repeint sur certaines textures, une approche hybride combinant les prédictions du CNN avec des descripteurs de texture classiques (filtres de Gabor, Laplacien, Local Binary Patterns) pourrait être explorée. Cette piste reste **hors périmètre du stage actuel** car elle contredirait le principe méthodologique d'apprentissage automatique par le modèle, mais constitue une évolution potentielle en cas de plafonnement des performances.
-* **Enrichissement du dataset v0.1** : Si les résultats du stage révèlent un manque de représentativité (surapprentissage sur certaines marques, couleurs ou conditions), une session de collecte élargie sera planifiée en post-stage pour construire une version v0.2 avec 1000+ patches diversifiés.
+| Protocol Component                | Experimental Reference Value & R&D Specifications                                                                                                                                                                                                              |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Selected Configuration**  | Setup F (Xiaomi Redmi Note 12 + all-in-one Apexel Macro Module)                                                                                                                                                                                                |
+| **Main Signal Exploited**   | Surface macrotexture (orange peel effect)                                                                                                                                                                                                                      |
+| **Trained Classes**         | Original / Repaint (binary)                                                                                                                                                                                                                                    |
+| **Additional Output State** | Uncertain (generated through confidence rejection threshold)                                                                                                                                                                                                   |
+| **Input Resolution**        | Strict and standardized format of**384×384 pixels**                                                                                                                                                                                                     |
+| **Model / Backbone**        | Target architecture**EfficientNet-B0** *(Transfer Learning)*                                                                                                                                                                                           |
+| **Framework**               | **Keras / TensorFlow** *(TensorFlow Lite compatibility for future mobile deployment)*                                                                                                                                                                  |
+| **Approach**                | Patch classification + rejection threshold + confidence-weighted voting aggregation                                                                                                                                                                            |
+| **Controlled Variables**    | Vehicle, panel, bodywork area, module-to-surface distance (5–10 mm contact), integrated LED lighting, Xiaomi Redmi Note 12 in Pro mode, 2 patches per panel across 6–8 panels per vehicle.                                                                   |
+| **Tested Variables**        | Vehicle make/model, bodywork color, residual lighting conditions.                                                                                                                                                                                              |
+| **Inclusion Criteria**      | Perfectly sharp patch, effective module-to-surface contact, complete contextual metadata matrix, capture performed with manually controlled ISP settings.                                                                                                      |
+| **Exclusion Criteria**      | Blur, poor module-to-surface contact, faulty LED lighting, patch with model confidence below the threshold (marked Uncertain), uncertain annotation not flagged.                                                                                               |
+| **Expected Outputs (KPIs)** | **AUC** *(separation)*, **Repaint Recall** *(sensitivity)*, **inter-smartphone F1-score** *(ISP robustness)*, **vehicle accuracy** *(overall verdict after aggregation)*, **Uncertain rate** *(rejection proportion)*. |
 
 ---
 
-## 8. Limites de l'étude
+## 6. Deliverables and Target Experimental Objectives
 
-Une démarche scientifique rigoureuse exige d'identifier explicitement les limites de ce travail. Les limites suivantes sont reconnues dès le cadrage du projet.
+> **Note**: The values below are **target experimental objectives**, not guaranteed success thresholds. They will be evaluated and discussed in light of the actual results obtained. If they are not achieved, root-cause analysis and improvement proposals will constitute a deliverable in their own right.
 
-| Limite                                                        | Description                                                                                                                                                                                                                         | Impact potentiel                                                                                                                                       |
-| :------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Volume limité du dataset v0.1**                      | 450-500 patches issus de 30-50 véhicules constituent une première version exploratoire.                                                                                                                                           | Risque de surapprentissage sur les marques et couleurs sur-représentées dans le dataset. Nécessitera un enrichissement pour une version production. |
-| **Un seul module macro testé**                         | Le Setup F (Apexel tout-en-un) est le seul dispositif d'acquisition macroscopique évalué expérimentalement. D'autres modules (Sandmarc 40x, Moment Macro) pourraient offrir des performances différentes.                       | Le choix du setup optimal est conditionné à la disponibilité matérielle, pas à une comparaison exhaustive de l'ensemble des modules du marché.   |
-| **Absence de validation multi-saisons**                 | Toutes les captures sont réalisées durant l'été 2026 (Juillet-Août). Les performances pourraient varier en conditions hivernales (humidité, givre, éclairage différent).                                                    | Le système n'a pas été validé sur des conditions climatiques diversifiées.                                                                        |
-| **Absence de validation inter-pays**                    | Le dataset est constitué uniquement sur des véhicules disponibles en Tunisie. Les standards de peinture, les marques dominantes et les pratiques de carrosserie varient selon les marchés.                                       | La généralisation à d'autres marchés géographiques n'est pas garantie sans adaptation du dataset.                                                 |
-| **Grossissement réel non certifié**                   | Le grossissement réel du module Apexel n'est pas celui annoncé par le fabricant (~10x mesuré vs 200x revendiqué). La résolution effective est une estimation préliminaire à confirmer par mesure avec règle de calibration. | Les chiffres de résolution effective cités dans ce document sont des estimations à valider expérimentalement en Semaine 4.                         |
-| **Vérité terrain dépendante de l'expertise humaine** | L'annotation Origine/Repeint repose sur l'historique d'atelier ou l'expertise visuelle d'un carrossier, avec une incertitude inhérente sur les cas frontières.                                                                    | Une mauvaise annotation de quelques images peut réduire la performance du modèle de manière non traçable.                                          |
-| **Application mobile hors périmètre**                 | Ce stage produit un pipeline de classification, pas une application mobile déployée. Le comportement en conditions d'utilisation réelle (opérateur non expert, pression de l'environnement) n'est pas évalué.                 | Les résultats du stage servent à valider la faisabilité technique, pas la robustesse en usage terrain non supervisé.                               |
+The project must produce:
+
+- A benchmark matrix;
+- A documented macro dataset V0.1;
+- An AI prototype for patch classification + thresholding + aggregation;
+- An evaluation report;
+- Product recommendations;
+- An industrialization roadmap.
+
+The target experimental objectives are:
+
+- **AUC per patch** ≥ 0.85.
+- **Repaint Recall per patch** ≥ 0.90.
+- **Vehicle accuracy** ≥ 0.80 after multi-patch aggregation.
+- **Processing time** ≤ 90 seconds per vehicle (capture + inference).
+- **Error analysis**: at least 5 root causes identified and explained.
+
+## 7. Future Development Perspectives
+
+- **Development of a dedicated mobile application**: The final deployment of the MALLOULIAUTO product will require the development of a native mobile application (Android and iOS) to replace the smartphone's generic camera application. This application will directly access the camera sensor through the operating system's low-level APIs (**CameraX** on Android and **AVFoundation** on iOS) to programmatically control all capture settings: forced disabling of Beauty Mode, automatic HDR, Portrait mode, and all computational filters; locking of exposure, white balance, and focus; and enforcement of maximum resolution and RAW/DNG format whenever supported. The end user would not need to perform any technical adjustments, ensuring reproducibility of captures across users and smartphones. The application would also integrate an on-screen graphic mask, a **gyroscope** lock fixed at 45°, and real-time RGB histogram analysis to intercept and reject abnormal shots (*hard cases*) before inference. Development of this application is **outside the scope of the current internship** (time constraints over the 8-week period) and constitutes the first priority of the V1 roadmap for industrial deployment.
+- **Colorimetric extension through intra-vehicle comparison**: To improve model sensitivity in high-end partial-repair cases where the textural signature alone may be insufficient, a future product enhancement could use an internal colorimetric reference within the vehicle (typically the roof, which is statistically rarely repainted). This approach would calculate a color difference (ΔE, CIELAB color space) between the reference panel and the inspected panel, directly using the existing Setup F without additional equipment. It would require prior empirical calibration of the decision threshold, since ΔE values obtained from field smartphone captures are not comparable to spectrophotometric laboratory thresholds (typically ΔE > 2.0 under standardized D65 lighting).
+- **Luminance filtering (dual color space)**: Native sRGB mixes color and light intensity across its channels, making the analysis sensitive to parking-area weather conditions. One possible development would be to temporarily convert images to **CIELAB** to normalize brightness through the luminance channel (\(L\)), then convert them back to sRGB. The purpose would be to neutralize illumination biases while preserving the 3-channel sRGB format required for **EfficientNet-B0 Transfer Learning**.
+- **Extension using classical texture descriptors**: If the internship results reveal difficult cases in which EfficientNet-B0 systematically confuses Original and Repaint for certain textures, a hybrid approach combining CNN predictions with classical texture descriptors (Gabor filters, Laplacian, Local Binary Patterns) could be explored. This direction remains **outside the scope of the current internship** because it would contradict the methodological principle of model-based machine learning, but it represents a potential development if performance reaches a plateau.
+- **Enrichment of dataset V0.1**: If the internship results reveal a lack of representativeness (overfitting on certain makes, colors, or conditions), an expanded collection session will be planned after the internship to build version V0.2 with more than 1,000 diversified patches.
 
 ---
 
-## 9. Références & Matériel Validé
+## 8. Study Limitations
+
+A rigorous scientific approach requires the explicit identification of the limitations of this work. The following limitations are acknowledged from the project-scoping stage.
+
+| Limitation                                        | Description                                                                                                                                                                                                                       | Potential Impact                                                                                                                        |
+| :------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
+| **Limited size of dataset V0.1**            | 450–500 patches from 30–50 vehicles constitute an initial exploratory version.                                                                                                                                                  | Risk of overfitting to makes and colors overrepresented in the dataset. Enrichment will be required for a production version.           |
+| **Only one macro module tested**            | Setup F (all-in-one Apexel) is the only macro acquisition device evaluated experimentally. Other modules (Sandmarc 40x, Moment Macro) could offer different performance.                                                          | The selection of the optimal setup depends on equipment availability rather than an exhaustive comparison of all modules on the market. |
+| **Absence of multi-season validation**      | All captures are performed during summer 2026 (July–August). Performance may vary under winter conditions (humidity, frost, different lighting).                                                                                 | The system has not been validated under diverse climatic conditions.                                                                    |
+| **Absence of cross-country validation**     | The dataset is composed exclusively of vehicles available in Tunisia. Paint standards, dominant brands, and bodywork practices vary across markets.                                                                               | Generalization to other geographical markets is not guaranteed without dataset adaptation.                                              |
+| **Actual magnification not certified**      | The actual magnification of the Apexel module is not the value advertised by the manufacturer (\~10x measured vs. 200x claimed). Effective resolution is a preliminary estimate that must be confirmed using a calibration ruler. | The effective resolution figures cited in this document are estimates to be experimentally validated in Week 4.                         |
+| **Ground truth depends on human expertise** | Original/Repaint annotation relies on workshop history or a bodywork specialist's visual expertise, with inherent uncertainty in borderline cases.                                                                                | Incorrect annotation of a few images may reduce model performance in a way that is difficult to trace.                                  |
+| **Mobile application outside the scope**    | This internship delivers a classification pipeline, not a deployed mobile application. Behavior under real-world usage conditions (non-expert operator, environmental pressure) is not evaluated.                                 | Internship results are intended to validate technical feasibility, not robustness in unsupervised field use.                            |
+
+---
+
+## 9. References & Validated Equipment
 
 - **[Dong et al., AAAI 2024]** — *Exploiting Polarized Material Cues for Robust Car Detection* — [https://arxiv.org](https://arxiv.org)
-- **[Code associé PCDNet]** — *Framework de détection polarisée* — [https://github.com](https://github.com)
+- **[Associated PCDNet Code]** — *Polarized Detection Framework* — [https://github.com](https://github.com)
 - **[ISRA Vision]** — *Car Paint Vision Systems for Industrial Automation* — [https://isravision.com](https://isravision.com)
 - **[Micro-Epsilon]** — *reflectCONTROL Automotive Defect Detection* — [https://micro-epsilon.com](https://micro-epsilon.com)
 - **[Semitela et al., Sensors 2025]** — *Combining Deflectometry and Deep Learning (ResNet-50) for Car Body Paint Inspection* — [https://doi.org](https://doi.org)
 - **[OpenCV Documentation]** — *Color Constancy Framework (xphoto::GrayworldWB)* — [https://opencv.org](https://opencv.org)
-- **[Université de Helsinki]** — *Computer Vision Combined with Smartphone Helps See Colours Accurately* — [https://helsinki.fi](https://helsinki.fi)
+- **[University of Helsinki]** — *Computer Vision Combined with Smartphone Helps See Colours Accurately* — [https://helsinki.fi](https://helsinki.fi)
 - **[DeFelsko]** — *Automotive Paint Inspection (Paint Meters)* — [https://defelsko.com](https://defelsko.com)
-- **[CarVertical]** — *Guide jauge d'épaisseur de peinture automobile* — [https://carvertical.com](https://carvertical.com)
+- **[CarVertical]** — *Automotive Paint Thickness Gauge Guide* — [https://carvertical.com](https://carvertical.com)
 - **[Apexel]** — *Smartphone Macro Lens Documentation* — [https://apexeloptic.com](https://apexeloptic.com)
 
 ---
 
-### Spécifications Matériel Validées pour Commande (Setup F Retenu)
+### Validated Equipment Specifications for Ordering (Selected Setup F)
 
-- **Module Macroscopique Smartphone Tout-en-Un (Priorité Haute)** : *Apexel Macro Microscope with integrated LEDs and CPL Filter* (37 €). Module clip-on universel offrant un grossissement macro avec LEDs intégrées et filtre polarisant CPL intégré, compatible avec la majorité des smartphones. Étui de transport inclus.
+- **All-in-One Smartphone Macro Module (High Priority)**: *Apexel Macro Microscope with integrated LEDs and CPL Filter* (€37). Universal clip-on module offering macro magnification, integrated LEDs, and an integrated CPL polarizing filter, compatible with most smartphones. Carrying case included.
+
   - https://www.amazon.fr/Microscope-200X-smartphone-microscope-num%C3%A9rique/dp/B09QGQYG39?th=1
 
 ---
 
-### Matériel étudié mais non commandé (Références SOTA)
+### Equipment Studied but Not Ordered (SOTA References)
 
-- **NEEWER NL-36AI + Filtre CPL séparé (Setup C initialement envisagé)** : Approche par éclairage rasant et polarisation avec accessoires séparés. Écartée car résolution effective insuffisante à 40 cm comparée au Setup F macroscopique, et complexité opérationnelle liée à la gestion d'accessoires séparés (LED + CPL + trépied).
-- **ColorChecker Classic Mini (Priorité Optionnelle)** : Mire physique étalonnée à 24 patchs pour l'étalonnage scientifique témoin en cas de dérive labo (Setup D). (£74.00)
+- **NEEWER NL-36AI + Separate CPL Filter (Initially Considered Setup C)**: Grazing-lighting and polarization approach using separate accessories. Excluded because its effective resolution at 40 cm is insufficient compared with macro Setup F, and because of the operational complexity involved in handling separate accessories (LED + CPL + tripod).
+- **ColorChecker Classic Mini (Optional Priority)**: Calibrated physical chart containing 24 patches for scientific reference calibration in case of laboratory drift (Setup D). (£74.00)
 
-  - [Lien Officiel : Calibrite.com](https://calibrite.com/product/colorchecker-classic-mini/)
-- **Spectro 1 Mobile Spectrophotometer (Setup B)** : Appareil de captation spectrale ponctuelle multi-bandes pour l'extraction de signatures pigmentaires pures. Écarté du produit V1 car il fournit une mesure locale isolée et non une image 2D complète, le rendant incompatible avec un modèle CNN. ($299.99)
+  - [Official link: Calibrite.com](https://calibrite.com/product/colorchecker-classic-mini/)
+- **Spectro 1 Mobile Spectrophotometer (Setup B)**: Multi-band point spectral acquisition device for extracting pure pigment signatures. Excluded from the V1 product because it provides an isolated local measurement rather than a complete 2D image, making it incompatible with a CNN model. ($299.99)
 
-  - [Lien Commercial : Amazon.com](https://www.amazon.com/Spectro-Spectrophotometer-Matching-Analysis-Quality/dp/B0B4TWMRDJ)
-- **Rhopoint TAMS - Total Appearance Measurement System (Setup E)** : Équipement industriel lourd de déflectométrie mesurant la distorsion des reflets de motifs structurés (waviness, DOI, défauts). Écarté car il s'agit d'un système de métrologie fixe au coût prohibitif, impossible à transposer pour un déploiement embarqué autonome de poche.
+  - [Commercial link: Amazon.com](https://www.amazon.com/Spectro-Spectrophotometer-Matching-Analysis-Quality/dp/B0B4TWMRDJ)
+- **Rhopoint TAMS — Total Appearance Measurement System (Setup E)**: Heavy industrial deflectometry equipment measuring the distortion of reflections from structured patterns (waviness, DOI, defects). Excluded because it is a fixed metrology system with prohibitive cost, making it impossible to adapt to autonomous pocket-sized embedded deployment.
 
-  - [Lien Constructeur : RhopointAmericas.com](https://www.rhopointamericas.com/product/rhopoint-tams-total-appearance-measurement-system/)
-- **Caméras industrielles USB (Basler, IDS, FLIR)** : Solutions professionnelles évaluées mais écartées du stage pour trois raisons : (1) coût prohibitif (500-3000€), (2) nécessité d'un ordinateur portable en permanence, (3) résolution nominale inférieure au smartphone (1-5 MP contre 48 MP). Positionnées en perspective V2 pour un poste fixe d'inspection.
+  - [Manufacturer link: RhopointAmericas.com](https://www.rhopointamericas.com/product/rhopoint-tams-total-appearance-measurement-system/)
+- **Industrial USB Cameras (Basler, IDS, FLIR)**: Professional solutions evaluated but excluded from the internship for three reasons: (1) prohibitive cost (€500–3,000), (2) the permanent need for a laptop, and (3) lower nominal resolution than the smartphone (1–5 MP compared with 48 MP). Considered as a V2 perspective for a fixed inspection station.

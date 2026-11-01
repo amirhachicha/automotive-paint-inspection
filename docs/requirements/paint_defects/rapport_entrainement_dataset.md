@@ -1,238 +1,239 @@
-# Rapport d'entraînement — Dataset propriétaire atelier
 
-**Projet :** MALLOULINOVA / MALLOULIAUTO  
-**Référence :** MALL-STG-ETE-2026-PAINT-01  
-**Type d'étude :** preuve de faisabilité exploratoire  
-**Dispositif :** Redmi Note 12 + module Apexel  
-**Date de dernière exécution documentée :** 21 août 2026
+# Training Report — Workshop Proprietary Dataset
 
----
-
-## 1. Objectif
-
-L'objectif de cette expérimentation est d'évaluer si des images macro-texturales acquises avec un smartphone Redmi Note 12 et un module Apexel contiennent un signal permettant de distinguer des surfaces automobiles :
-
-- `origine` ;
-- `repeint`.
-
-L'étude porte principalement sur les variations de texture, les différences de brillance et les irrégularités de finition observables à courte distance.
-
-Le résultat recherché est une première validation de faisabilité et non une validation industrielle du produit.
+**Project:** MALLOULINOVA / MALLOULIAUTO
+**Reference:** MALL-STG-ETE-2026-PAINT-01
+**Study type:** Exploratory proof of feasibility
+**Equipment:** Redmi Note 12 + Apexel attachment
+**Date of last documented execution:** August 21, 2026
 
 ---
 
-## 2. Dataset utilisé
+## 1. Objective
 
-Le dataset propriétaire pilote contient actuellement :
+The objective of this experiment is to evaluate whether macro-texture images acquired using a Redmi Note 12 smartphone and an Apexel attachment contain a signal that can distinguish between automotive surfaces classified as:
+
+- `original`;
+- `repaint`.
+
+The study focuses primarily on texture variations, gloss differences, and finish irregularities observable at close range.
+
+The intended outcome is an initial feasibility assessment, not an industrial validation of the product.
+
+---
+
+## 2. Dataset Used
+
+The pilot proprietary dataset currently contains:
 
 ```text
-Nombre total : 264 images
-Origine      : environ 157 images
-Repeint      : environ 107 images
+Total number : 264 images
+Original     : approximately 157 images
+Repaint    : approximately 107 images
 ```
 
-Répartition utilisée pour l'entraînement :
+Distribution used for training:
 
-| Sous-ensemble | Origine | Repeint | Total |
-|---|---:|---:|---:|
-| Train | 112 | 54 | 166 |
-| Validation | 23 | 24 | 47 |
-| Test | 22 | 29 | 51 |
+| Subset     | Original | Repaint | Total |
+| ---------- | -------: | ------: | ----: |
+| Train      |      112 |      54 |   166 |
+| Validation |       23 |      24 |    47 |
+| Test       |       22 |      29 |    51 |
 
-Les images ont été réparties à l'aide des métadonnées de session. La séparation par véhicule doit continuer à être vérifiée lorsque les identifiants sont disponibles.
-
----
-
-## 3. Prétraitement
-
-Les étapes utilisées sont :
-
-1. chargement des images depuis `dataset_final_splits_v2/` ;
-2. redimensionnement en `384 × 384` pixels ;
-3. recadrage central fixe de 32 pixels par côté pour réduire l'influence des bords lumineux ;
-4. redimensionnement de la zone conservée vers `384 × 384` ;
-5. normalisation attendue par EfficientNet-B0 ;
-6. data augmentation modérée appliquée uniquement pendant l'entraînement.
-
-Le recadrage central de 64 pixels par côté n'a pas été retenu, car il supprimait une partie trop importante de la texture utile.
+The images were split using session metadata. Vehicle-based splitting should continue to be verified whenever vehicle identifiers are available.
 
 ---
 
-## 4. Data augmentation
+## 3. Preprocessing
 
-Les transformations utilisées sont modérées :
+The following steps were used:
 
-- retournement horizontal ;
-- rotation légère ;
-- translation légère ;
-- zoom léger ;
-- variation modérée du contraste ;
-- variation modérée de la luminosité.
+1. Loading images from `dataset_final_splits_v2/`;
+2. Resizing to `384 × 384` pixels;
+3. Applying a fixed central crop of 32 pixels on each side to reduce the influence of bright edges;
+4. Resizing the retained area to `384 × 384`;
+5. Applying the preprocessing expected by EfficientNet-B0;
+6. Applying moderate data augmentation only during training.
 
-Les transformations ne sont pas appliquées aux jeux Validation et Test.
+A central crop of 64 pixels on each side was not selected because it removed too much of the useful texture.
 
 ---
 
-## 5. Modèle
+## 4. Data Augmentation
 
-Le modèle utilisé est un EfficientNet-B0 pré-entraîné sur ImageNet avec une tête de classification binaire.
+The following moderate transformations were used:
 
-Architecture :
+- Horizontal flipping;
+- Slight rotation;
+- Slight translation;
+- Slight zoom;
+- Moderate contrast variation;
+- Moderate brightness variation.
+
+These transformations are not applied to the Validation and Test sets.
+
+---
+
+## 5. Model
+
+The model used is an EfficientNet-B0 pre-trained on ImageNet, with a binary classification head.
+
+Architecture:
 
 ```text
 Image 384×384×3
       ↓
-Crop central fixe
+Fixed central crop
       ↓
-Redimensionnement 384×384
+Resizing to 384×384
       ↓
-Data augmentation pendant Train
+Data augmentation during Train
       ↓
 EfficientNet-B0
       ↓
 GlobalAveragePooling2D
       ↓
-Dropout 0,5
+Dropout 0.5
       ↓
 Dense 128
       ↓
-Dropout 0,3
+Dropout 0.3
       ↓
-Softmax 2 classes
+Softmax — 2 classes
       ↓
-origine / repeint
+original / repaint
 ```
 
 ### Phase 1
 
-- backbone gelé ;
-- learning rate : `1e-3` ;
-- pondération des classes ;
-- EarlyStopping ;
+- Frozen backbone;
+- Learning rate: `1e-3`;
+- Class weighting;
+- EarlyStopping;
 - ReduceLROnPlateau.
 
 ### Phase 2
 
-- fine-tuning limité ;
-- cinq dernières couches potentiellement entraînables ;
-- BatchNorm conservées gelées ;
-- learning rate : `1e-5` ;
-- EarlyStopping ;
-- sauvegarde du meilleur checkpoint.
+- Limited fine-tuning;
+- Last five layers potentially trainable;
+- BatchNormalization layers kept frozen;
+- Learning rate: `1e-5`;
+- EarlyStopping;
+- Best checkpoint saving.
 
 ---
 
-## 6. Résultats du dernier entraînement
+## 6. Results of the Latest Training Run
 
-Le dernier entraînement documenté a produit les résultats suivants sur le jeu de test :
+The latest documented training run produced the following results on the Test set:
 
-| Métrique | Résultat |
-|---|---:|
-| Test loss | 0,8098 |
-| Accuracy | 0,6863 |
-| Balanced accuracy | 0,7132 |
-| F1 macro | 0,6832 |
-| Precision Origine | 0,5882 |
-| Recall Origine | 0,9091 |
-| F1 Origine | 0,7143 |
-| Precision Repeint | 0,8824 |
-| Recall Repeint | 0,5172 |
-| F1 Repeint | 0,6522 |
-| AUC Repeint | 0,6755 |
-| Nombre d'erreurs | 16 / 51 |
+| Metric             |  Result |
+| ------------------ | ------: |
+| Test loss          |  0.8098 |
+| Accuracy           |  0.6863 |
+| Balanced accuracy  |  0.7132 |
+| Macro F1           |  0.6832 |
+| Original precision |  0.5882 |
+| Original recall    |  0.9091 |
+| Original F1        |  0.7143 |
+| Repaint precision |  0.8824 |
+| Repaint recall    |  0.5172 |
+| Repaint F1        |  0.6522 |
+| Repaint AUC       |  0.6755 |
+| Number of errors   | 16 / 51 |
 
-Matrice de confusion :
+Confusion matrix:
 
 ```text
-                 Prédit origine   Prédit repeint
-Vrai origine            20                 2
-Vrai repeint            14                15
+                 Predicted original   Predicted repaint
+Actual original           20                     2
+Actual repaint          14                    15
 ```
 
 ---
 
-## 7. Interprétation
+## 7. Interpretation
 
-Le modèle reconnaît correctement une grande partie des surfaces d'origine :
+The model correctly recognizes a large proportion of original surfaces:
 
 ```text
-20/22 images Origine correctement classées
+20/22 Original images correctly classified
 ```
 
-La classe `Repeint` est reconnue dans :
+The `Repaint` class is correctly recognized in:
 
 ```text
 15/29 images
 ```
 
-La précision de la classe `Repeint` est élevée, mais son rappel reste limité. Le modèle manque donc encore plusieurs surfaces repeintes et les classe comme `Origine`.
+The precision of the `Repaint` class is high, but its recall remains limited. Consequently, the model still misses several repainted surfaces and classifies them as `Original`.
 
-L'AUC de `0,6755` indique une séparation probabiliste modérée. Le système contient donc un signal exploitable, mais ce signal n'est pas suffisamment stable pour une utilisation industrielle.
+The AUC of `0.6755` indicates moderate probabilistic separation. The system therefore contains an exploitable signal, but this signal is not sufficiently stable for industrial use.
 
 ---
 
-## 8. Seuils de décision
+## 8. Decision Thresholds
 
-Le seuil exploratoire de classification de la classe `Repeint` a été recherché sur le jeu de validation. Une valeur proche de `0,52` a été observée dans cette expérience.
+The exploratory classification threshold for the `Repainted` class was searched for using the Validation set. A value close to `0.52` was observed in this experiment.
 
-La règle de classification est :
+The classification rule is:
 
 ```text
-p(repeint) ≥ 0,52 → repeint
-p(repeint) < 0,52 → origine
+p(repainted) ≥ 0.52 → repaint
+p(repainted) < 0.52 → original
 ```
 
-Un seuil de rejet séparé peut produire l'état `Incertain` :
+A separate rejection threshold can produce the `Uncertain` state:
 
 ```text
-confiance maximale < 0,65 → Incertain
+Maximum confidence < 0.65 → Uncertain
 ```
 
-Ces seuils ne doivent pas être considérés comme définitifs. Ils doivent être confirmés sur un dataset plus représentatif.
+These thresholds should not be considered final. They must be confirmed using a more representative dataset.
 
 ---
 
-## 9. Analyse de l'overfitting
+## 9. Overfitting Analysis
 
-Les courbes montrent généralement une amélioration plus rapide de l'accuracy d'entraînement que de l'accuracy de validation. La validation reste plus faible et la validation loss augmente après les premières époques.
+The curves generally show a faster improvement in training accuracy than in validation accuracy. Validation accuracy remains lower, and validation loss increases after the first few epochs.
 
-Cela indique :
+This indicates:
 
-- un surapprentissage partiel ;
-- une variabilité importante des images ;
-- une différence entre les sessions d'acquisition ;
-- un dataset encore petit pour un modèle de Deep Learning ;
-- une possible influence de la couleur, de la pièce, de l'éclairage et du cadrage.
+- Partial overfitting;
+- Significant image variability;
+- Differences between acquisition sessions;
+- A dataset that is still small for a Deep Learning model;
+- A possible influence of color, body panel, lighting, and framing.
 
-La régularisation, le crop central, la data augmentation modérée et le fine-tuning limité réduisent le risque, mais ne suppriment pas complètement l'overfitting.
+Regularization, central cropping, moderate data augmentation, and limited fine-tuning reduce the risk, but do not completely eliminate overfitting.
 
 ---
 
-## 10. Limites
+## 10. Limitations
 
-- Dataset propriétaire encore limité.
-- Classes déséquilibrées.
-- Validation réalisée sur un petit nombre d'images.
-- Variabilité entre véhicules, pièces, couleurs et sessions.
-- L'Apexel présente un vignettage dans certains modes de capture.
-- Les performances peuvent être influencées par les conditions d'acquisition.
-- La validation par véhicule doit être renforcée.
-- Aucun modèle industriel final n'est validé.
+- The proprietary dataset is still limited in size.
+- The classes are imbalanced.
+- Validation is performed on a small number of images.
+- There is variability across vehicles, body panels, colors, and acquisition sessions.
+- The Apexel attachment exhibits vignetting in certain capture modes.
+- Performance may be influenced by acquisition conditions.
+- Vehicle-based validation needs to be strengthened.
+- No final industrial model has been validated.
 
 ---
 
 ## 11. Conclusion
 
-Le pipeline complet de classification a été exécuté sur un dataset automobile propriétaire acquis avec un Redmi Note 12 et un module Apexel. Les résultats obtenus montrent une possibilité d'exploiter les caractéristiques macro-texturales pour distinguer des surfaces d'origine et repeintes.
+The complete classification pipeline was executed on a proprietary automotive dataset acquired using a Redmi Note 12 smartphone and an Apexel attachment. The results demonstrate the possibility of exploiting macro-textural features to distinguish original and repainted surfaces.
 
-La performance actuelle constitue une preuve de faisabilité partielle. Elle ne permet toutefois pas de garantir une généralisation fiable à de nouveaux véhicules ou à de nouvelles sessions d'acquisition.
+The current performance represents a partial proof of feasibility. However, it does not make it possible to guarantee reliable generalization to new vehicles or new acquisition sessions.
 
-Les prochaines améliorations prioritaires sont :
+The main priorities for future improvements are:
 
-1. augmenter la diversité des véhicules et des pièces ;
-2. améliorer la représentation des surfaces repeintes dans Train ;
-3. contrôler davantage l'éclairage et la mise au point ;
-4. appliquer une séparation stricte par véhicule ;
-5. évaluer plusieurs sessions indépendantes ;
-6. analyser les erreurs avec l'expertise de l'atelier ;
-7. optimiser le seuil `Incertain` sur un jeu de validation plus grand.
+1. Increase the diversity of vehicles and body panels;
+2. Improve the representation of repainted surfaces in the Train set;
+3. Further control lighting and focusing conditions;
+4. Apply strict vehicle-based data splitting;
+5. Evaluate the model across several independent acquisition sessions;
+6. Analyze errors with the workshop's expertise;
+7. Optimize the `Uncertain` threshold using a larger Validation set.
