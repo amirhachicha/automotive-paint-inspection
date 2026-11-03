@@ -13,6 +13,21 @@ The result is indicative: it does not replace professional inspection or instrum
 - Optional display of the central image region used for analysis.
 - Model loading on the backend: the browser does not directly load the Keras model weights.
 
+## Live Render Deployment
+
+The application is available online at:
+
+- Web interface: [https://automotive-paint-inspection.onrender.com/](https://automotive-paint-inspection.onrender.com/)
+- Health check: [https://automotive-paint-inspection.onrender.com/health](https://automotive-paint-inspection.onrender.com/health)
+
+### Deployment Limitations
+
+- The uploaded image must be JPEG or PNG and must not exceed **10 MiB**.
+- The Render service currently uses the **Free plan** and may spin down after inactivity.
+- After inactivity, the first request may take longer while Render restarts the service.
+- The Free instance is limited to **512 MB of RAM**. TensorFlow may require additional memory, and simultaneous analyses can trigger an out-of-memory restart.
+- Opening the website on several devices is supported, but each device shares the same service and resource limits.
+
 ## Project Structure
 
 ```text
