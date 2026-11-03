@@ -9,8 +9,10 @@ const root = resolve(scriptDir, "..");
 const publicRoot = join(root, "public");
 const args = process.argv.slice(2);
 const portArgIndex = args.indexOf("--port");
-const port = portArgIndex >= 0 ? Number(args[portArgIndex + 1]) : 3000;
-const host = "127.0.0.1";
+const port = portArgIndex >= 0
+  ? Number(args[portArgIndex + 1])
+  : Number(process.env.PORT || 3000);
+const host = process.env.HOST || "0.0.0.0";
 const shouldOpen = args.includes("--open");
 
 const mimeTypes = {

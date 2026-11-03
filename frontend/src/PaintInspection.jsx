@@ -1,4 +1,12 @@
-const PAINT_API_BASES = ['http://127.0.0.1:8000', 'http://localhost:8000'];
+const configuredApiBase = window.PAINT_API_BASE_URL?.trim();
+const isLocalFrontend =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1';
+const PAINT_API_BASES = configuredApiBase && !configuredApiBase.includes('REPLACE_WITH')
+  ? [configuredApiBase.replace(/\/$/, '')]
+  : isLocalFrontend
+  ? ['http://127.0.0.1:8000', 'http://localhost:8000']
+  : [window.location.origin];
 const VERDICT_LABELS = {
   origine: 'Original',
   repeint: 'Repainted',

@@ -1,7 +1,10 @@
 import os
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 try:
     from .paint_analysis import paint_router
@@ -37,3 +40,12 @@ app.include_router(paint_router)
 @app.get("/health")
 def health_check() -> dict[str, str]:
     return {"status": "ok"}
+
+
+frontend_directory = Path(__file__).resolve().parent.parent / "frontend"
+if frontend_directory.is_dir():
+    @app.get("/paint-inspection", include_in_schema=False)
+    async def paint_inspection_page():
+        return FileResponse(frontend_directory / "index.html")
+
+    app.mount("/", StaticFiles(directory=str(frontend_directory), html=True), name="frontend")
