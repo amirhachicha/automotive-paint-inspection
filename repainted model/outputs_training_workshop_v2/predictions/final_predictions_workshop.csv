@@ -1,52 +1,52 @@
 ﻿file_path,true_class,proba_original,proba_repeint,raw_prediction,confidence,repaint_threshold,confidence_threshold,verdict_final,accepted
-/content/dataset_final_splits_v2/test/original/image_076.jpeg,original,0.5659899,0.4340101,original,0.5659899,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_077.jpeg,original,0.6095696,0.3904304,original,0.6095696,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_078.jpeg,original,0.7032906,0.29670945,original,0.7032906,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_079.jpeg,original,0.6529744,0.34702557,original,0.6529744,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_080.jpeg,original,0.7596523,0.24034764,original,0.7596523,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_081.jpeg,original,0.642096,0.35790405,original,0.642096,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_082.jpeg,original,0.71445686,0.28554317,original,0.71445686,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_083.jpeg,original,0.6191585,0.38084155,original,0.6191585,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_088.jpeg,original,0.80868787,0.1913121,original,0.80868787,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_160.jpeg,original,0.7262216,0.2737784,original,0.7262216,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_164.jpeg,original,0.5287322,0.47126782,original,0.5287322,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_184.jpeg,original,0.72279733,0.2772027,original,0.72279733,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_185.jpeg,original,0.67790926,0.3220907,original,0.67790926,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_186.jpeg,original,0.3902346,0.6097654,repeint,0.6097654,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_187.jpeg,original,0.6234019,0.37659815,original,0.6234019,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_188.jpeg,original,0.48250777,0.51749223,original,0.51749223,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_189.jpeg,original,0.6172807,0.38271928,original,0.6172807,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_190.jpeg,original,0.60797405,0.39202598,original,0.60797405,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_191.jpeg,original,0.6761929,0.32380715,original,0.6761929,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_192.jpeg,original,0.5933195,0.4066805,original,0.5933195,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/original/image_193.jpeg,original,0.7925874,0.20741262,original,0.7925874,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/original/image_194.jpeg,original,0.6692154,0.33078465,original,0.6692154,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_015.jpeg,repeint,0.66073173,0.3392683,original,0.66073173,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_016.jpeg,repeint,0.69205135,0.30794868,original,0.69205135,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_017.jpeg,repeint,0.6483811,0.3516189,original,0.6483811,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/repeint/image_018.jpeg,repeint,0.7140007,0.28599927,original,0.7140007,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_019.jpeg,repeint,0.7186384,0.28136155,original,0.7186384,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_020.jpeg,repeint,0.7133932,0.28660685,original,0.7133932,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_062.jpeg,repeint,0.13474725,0.86525273,repeint,0.86525273,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_063.jpeg,repeint,0.11286577,0.8871342,repeint,0.8871342,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_064.jpeg,repeint,0.16226216,0.8377378,repeint,0.8377378,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_065.jpeg,repeint,0.15703188,0.8429681,repeint,0.8429681,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_066.jpeg,repeint,0.092671834,0.9073281,repeint,0.9073281,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_067.jpeg,repeint,0.10315581,0.8968442,repeint,0.8968442,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_239.jpeg,repeint,0.7140007,0.28599927,original,0.7140007,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_240.jpeg,repeint,0.66073173,0.3392683,original,0.66073173,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_241.jpeg,repeint,0.69205135,0.30794868,original,0.69205135,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_242.jpeg,repeint,0.6483811,0.3516189,original,0.6483811,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/repeint/image_243.jpeg,repeint,0.7117197,0.28828034,original,0.7117197,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_244.jpeg,repeint,0.7186384,0.28136155,original,0.7186384,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_245.jpeg,repeint,0.7133932,0.28660685,original,0.7133932,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_246.jpeg,repeint,0.69494617,0.30505383,original,0.69494617,0.52,0.65,original,True
-/content/dataset_final_splits_v2/test/repeint/image_247.jpeg,repeint,0.48023134,0.51976866,original,0.51976866,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/repeint/image_248.jpeg,repeint,0.22035407,0.7796459,repeint,0.7796459,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_249.jpeg,repeint,0.24720274,0.75279725,repeint,0.75279725,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_250.jpeg,repeint,0.24111004,0.75889,repeint,0.75889,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_251.jpeg,repeint,0.4061141,0.59388596,repeint,0.59388596,0.52,0.65,uncertain,False
-/content/dataset_final_splits_v2/test/repeint/image_252.jpeg,repeint,0.3080021,0.69199795,repeint,0.69199795,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_253.jpeg,repeint,0.3255931,0.6744069,repeint,0.6744069,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_254.jpeg,repeint,0.18435661,0.8156434,repeint,0.8156434,0.52,0.65,repeint,True
-/content/dataset_final_splits_v2/test/repeint/image_255.jpeg,repeint,0.30958918,0.6904108,repeint,0.6904108,0.52,0.65,repeint,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_076.jpeg,original,0.59357256,0.4064274,original,0.59357256,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_077.jpeg,original,0.6426159,0.35738412,original,0.6426159,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_078.jpeg,original,0.73513174,0.26486826,original,0.73513174,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_079.jpeg,original,0.68663704,0.3133629,original,0.68663704,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_080.jpeg,original,0.79041994,0.20958014,original,0.79041994,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_081.jpeg,original,0.7190778,0.2809222,original,0.7190778,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_082.jpeg,original,0.7805934,0.21940662,original,0.7805934,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_083.jpeg,original,0.6776244,0.32237563,original,0.6776244,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_088.jpeg,original,0.7385187,0.26148129,original,0.7385187,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_160.jpeg,original,0.73984337,0.26015666,original,0.73984337,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_164.jpeg,original,0.7028924,0.29710755,original,0.7028924,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_184.jpeg,original,0.70938975,0.29061025,original,0.70938975,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_185.jpeg,original,0.66661155,0.33338842,original,0.66661155,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_186.jpeg,original,0.4564399,0.54356015,original,0.54356015,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_187.jpeg,original,0.78895223,0.21104777,original,0.78895223,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_188.jpeg,original,0.65900254,0.34099752,original,0.65900254,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_189.jpeg,original,0.7501482,0.24985178,original,0.7501482,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_190.jpeg,original,0.7785247,0.22147535,original,0.7785247,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_191.jpeg,original,0.799473,0.200527,original,0.799473,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_192.jpeg,original,0.7661439,0.23385604,original,0.7661439,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_193.jpeg,original,0.8931116,0.106888406,original,0.8931116,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/original/image_194.jpeg,original,0.8523389,0.14766106,original,0.8523389,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_015.jpeg,repeint,0.6638441,0.3361559,original,0.6638441,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_016.jpeg,repeint,0.6875973,0.31240273,original,0.6875973,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_017.jpeg,repeint,0.63028574,0.3697142,original,0.63028574,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_018.jpeg,repeint,0.7109758,0.2890242,original,0.7109758,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_019.jpeg,repeint,0.7251737,0.2748263,original,0.7251737,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_020.jpeg,repeint,0.7209,0.27909997,original,0.7209,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_062.jpeg,repeint,0.24247499,0.757525,repeint,0.757525,0.57,0.65,repeint,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_063.jpeg,repeint,0.20210615,0.7978939,repeint,0.7978939,0.57,0.65,repeint,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_064.jpeg,repeint,0.27137256,0.72862744,repeint,0.72862744,0.57,0.65,repeint,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_065.jpeg,repeint,0.28985387,0.7101461,repeint,0.7101461,0.57,0.65,repeint,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_066.jpeg,repeint,0.17901577,0.8209842,repeint,0.8209842,0.57,0.65,repeint,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_067.jpeg,repeint,0.2281229,0.77187705,repeint,0.77187705,0.57,0.65,repeint,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_239.jpeg,repeint,0.7109758,0.2890242,original,0.7109758,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_240.jpeg,repeint,0.6638441,0.3361559,original,0.6638441,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_241.jpeg,repeint,0.6875973,0.31240273,original,0.6875973,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_242.jpeg,repeint,0.63028574,0.3697142,original,0.63028574,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_243.jpeg,repeint,0.72214586,0.27785417,original,0.72214586,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_244.jpeg,repeint,0.7251737,0.2748263,original,0.7251737,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_245.jpeg,repeint,0.7209,0.27909997,original,0.7209,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_246.jpeg,repeint,0.692985,0.30701503,original,0.692985,0.57,0.65,original,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_247.jpeg,repeint,0.5820672,0.41793284,original,0.5820672,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_248.jpeg,repeint,0.32761484,0.6723851,repeint,0.6723851,0.57,0.65,repeint,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_249.jpeg,repeint,0.37283352,0.62716645,repeint,0.62716645,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_250.jpeg,repeint,0.36082375,0.63917625,repeint,0.63917625,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_251.jpeg,repeint,0.5386901,0.4613099,original,0.5386901,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_252.jpeg,repeint,0.43522248,0.56477755,original,0.56477755,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_253.jpeg,repeint,0.483905,0.516095,original,0.516095,0.57,0.65,uncertain,False
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_254.jpeg,repeint,0.28998426,0.7100158,repeint,0.7100158,0.57,0.65,repeint,True
+/mnt/c/Users/user/OneDrive/Desktop/automotive-paint-inspection/repainted model/dataset_final_splits_v2/test/repeint/image_255.jpeg,repeint,0.43393776,0.5660623,original,0.5660623,0.57,0.65,uncertain,False
